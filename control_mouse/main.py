@@ -13,11 +13,11 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(False, min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 
-def hand_mask(image, results):
+def hand_mask(image, results):#画出手的骨架
     imgHeight = image.shape[0]
     imgWeight = image.shape[1]
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
+    if results.multi_hand_landmarks:#如果有手
+        for hand_landmarks in results.multi_hand_landmarks:#遍历所有手
             pre_x = 0
             pre_y = 0
             x0 = 0
@@ -27,7 +27,7 @@ def hand_mask(image, results):
             x17 = 0
             y17 = 0
 
-            for i, lm in enumerate(hand_landmarks.landmark):
+            for i, lm in enumerate(hand_landmarks.landmark):#遍历所有手的关节点
                 xPos = int(imgWeight * lm.x)  # 将坐标转化为整数
                 yPos = int(imgHeight * lm.y)
 
@@ -81,19 +81,19 @@ def hand_mask(image, results):
                         y17 = yPos
             # cv2.circle(image, (xPos, yPos), 3, (255, 0, 0), -1)
             if x0 != 0 and y0 != 0 and x5 != 0 and y5 != 0 and x17 != 0 and y17 != 0:
-                cv2.line(image, (x0, y0), (x5, y5), (128, 128, 128), 2)
-                cv2.line(image, (x0, y0), (x17, y17), (128, 128, 128), 2)
+                cv2.line(image, (x0, y0), (x5, y5), (128, 128, 128), 2) #手掌
+                cv2.line(image, (x0, y0), (x17, y17), (128, 128, 128), 2)#手掌
     return image
 
 
-def processImg(image):
-    x = 0
+def processImg(image):#处理图片
+    x = 0#食指的坐标 是百分比 要乘以屏幕的宽高才得到最终的坐标
     y = 0
     black = np.zeros(image.shape, dtype=np.uint8)
 
     image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
     image.flags.writeable = False
-    results = hands.process(image)
+    results = hands.process(image)#骨架的检测 调的api
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             for i, lm in enumerate(hand_landmarks.landmark):
@@ -109,7 +109,7 @@ def processImg(image):
     return black, x, y
 
 
-def mousemove(x_p, y_p, x_r, y_r):
+def mousemove(x_p, y_p, x_r, y_r):#鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
     x_m = x_r - x_p
     y_m = y_r - y_p
 
@@ -139,7 +139,7 @@ def opencamera(model_path):
     x_pre = 0
     y_pre = 0
     duration = 0
-    pTime = 0
+    pTime = 0#计算帧率的
     cTime = 0
 
     while True:
@@ -192,5 +192,6 @@ def opencamera(model_path):
         if cv2.waitKey(10) == ord('0'):
             break
 
+if __name__ == '__main__':
+    opencamera('')
 
-opencamera('')
