@@ -118,11 +118,11 @@ def mousemove(x_p, y_p, x_r, y_r):#鼠标移动 x_p:手指上一次位置 x_r:�
     x_m = x_r - x_p
     y_m = y_r - y_p
     d=0.1
-    if abs(x_m) > 440 or abs(y_m) > 300:
+    if abs(x_m) > 370 or abs(y_m) > 270:
         print("快速移动")
-        x_m = int(x_m * 3.7)
-        y_m = int(y_m * 3)
-        pag.moveRel(x_m, y_m, duration=d)
+        x_m = int(x_m * 4)
+        y_m = int(y_m * 3.5)
+        pag.moveRel(x_m, y_m, duration=0.25)
     elif abs(x_m) > 210 and abs(y_m) > 170:
         print("中速移动")
         x_m = int(x_m * 3.4)
@@ -184,8 +184,8 @@ def opencamera(model_path):
                 print("没动" + str(duration))
                 x_pre = x_real
                 y_pre = y_real
-                print(abs(x8 - x12)*2560, abs(y8 - y12)*1600)
-                if abs(x8-x12)*2560<80 and abs(y8-y12)*1600<80 and duration > 2:
+
+                if abs(x8-x12)*2560<80 and abs(y8-y12)*1600<80 and duration > 3:
                     print(abs(x8-x12), abs(y8-y12))
                     print("点击")
                     pag.click()
