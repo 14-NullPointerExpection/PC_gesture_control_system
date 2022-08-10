@@ -87,8 +87,10 @@ def hand_mask(image, results):#画出手的骨架
 
 
 def processImg(image):#处理图片
-    x = 0#食指的坐标 是百分比 要乘以屏幕的宽高才得到最终的坐标
-    y = 0
+    x8 = 0#食指的坐标 是百分比 要乘以屏幕的宽高才得到最终的坐标
+    y8 = 0
+    x12 = 0
+    y12 = 0
     black = np.zeros(image.shape, dtype=np.uint8)
 
     image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
@@ -98,43 +100,68 @@ def processImg(image):#处理图片
         for hand_landmarks in results.multi_hand_landmarks:
             for i, lm in enumerate(hand_landmarks.landmark):
                 if i == 8:
-                    x = lm.x
-                    y = lm.y
+                    x8 = lm.x
+                    y8 = lm.y
+                if i == 12:
+                    x12 = lm.x
+                    y12 = lm.y
 
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
     black = hand_mask(black, results)
 
-    return black, x, y
+    return black, x8, y8, x12, y12
 
 
 def mousemove(x_p, y_p, x_r, y_r):#鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
     x_m = x_r - x_p
     y_m = y_r - y_p
-
-    #print(x_m, y_m)
-    if abs(x_m) > 250 or abs(y_m) > 250:
+    d=0.1
+    if abs(x_m) > 440 or abs(y_m) > 300:
         print("快速移动")
-        x_m = int(x_m * 2.5)
-        y_m = int(y_m * 2.5)
-        pag.moveRel(x_m, y_m, duration=0)
-    if abs(x_m) < 100 and abs(y_m) < 100:
+        x_m = int(x_m * 3.7)
+        y_m = int(y_m * 3)
+        pag.moveRel(x_m, y_m, duration=d)
+    elif abs(x_m) > 210 and abs(y_m) > 170:
+        print("中速移动")
+        x_m = int(x_m * 3.4)
+        y_m = int(y_m * 2.6)
+        pag.moveRel(x_m, y_m, duration=d)
+    elif abs(x_m) < 150 and abs(y_m) < 120:
         print("慢速移动")
-        x_m = int(x_m * 0.5)
+        x_m = int(x_m * 0.7)
         y_m = int(y_m * 0.5)
-        pag.moveRel(x_m, y_m, duration=0)
+        pag.moveRel(x_m, y_m, duration=d)
     else:
-        x_m = int(x_m * 1.3)
-        y_m = int(y_m * 1.3)
-        pag.moveRel(x_m, y_m, duration=0)
+        x_m = int(x_m * 2.5)
+        y_m = int(y_m * 2.0)
+        pag.moveRel(x_m, y_m, duration=d)
     return x_r, y_r
+
+def scrollScreen( y_pre,  y_real):
+    y_m = y_real - y_pre
+    print(y_m)
+    if abs(y_m)>500:
+        print("滑动")
+        if y_m>0:
+            pag.scroll(500)
+        else:
+            pag.scroll(-500)
+
+
+
+
+
 
 
 def opencamera(model_path):
     # class_name = ['0', '1', '5']
     # net = dnn.readNetFromTensorflow(model_path)
     cap = cv2.VideoCapture(0)
+    #cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+    cap.set(3, 1280)
+    cap.set(4, 720)
 
     x_pre = 0
     y_pre = 0
@@ -143,43 +170,42 @@ def opencamera(model_path):
     cTime = 0
 
     while True:
-
-
         _, frame = cap.read()
-
         src_image = frame
-
-
-        pic, x, y = processImg(src_image)
+        pic, x8, y8,x12,y12 = processImg(src_image)
         cv2.imshow("pic_p", pic)
 
-        if x != 0 and y != 0:
-            x_real = (int(2560 * x))
-            y_real = (int(1600 * y))
-            print(x_real-x_pre, y_real-y_pre)
+        if x8 != 0 and y8 != 0:
+            x_real = (int(2560 * x8))
+            y_real = (int(1600 * y8))
+            #print(x_real-x_pre, y_real-y_pre)
             if x_pre - 10 < x_real < x_pre + 10 and y_pre - 10 < y_real < y_pre + 10:
                 duration += 1
                 print("没动" + str(duration))
                 x_pre = x_real
                 y_pre = y_real
-
-                if duration >= 10:
-                    print("打开")
-                    duration = 0
-                    print("按下")
+                print(abs(x8 - x12)*2560, abs(y8 - y12)*1600)
+                if abs(x8-x12)*2560<80 and abs(y8-y12)*1600<80 and duration > 2:
+                    print(abs(x8-x12), abs(y8-y12))
+                    print("点击")
                     pag.click()
+                    duration = 0
+
+                # if duration >= 10:
+                #     print("打开")
+                #     duration = 0
+                #     print("按下")
+                #     #pag.click()
 
             else:
                 _thread.start_new_thread(mousemove, (x_pre, y_pre, x_real, y_real))
+
+                #_thread.start_new_thread(scrollScreen, (y_pre, y_real))
                 #mousemove(x_pre, y_pre, x_real, y_real)
                 x_pre = x_real
                 y_pre = y_real
                 duration=0
-                # x_pre=x_real
-                # y_pre=y_real
 
-
-                #pag.moveTo((x_real,y_real),duration=0)
 
 
             # print(x_real,y_real)
