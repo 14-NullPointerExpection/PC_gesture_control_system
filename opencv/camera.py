@@ -271,10 +271,10 @@ def open_camera(model_path):
         center_y = int(center_y)
         cv2.rectangle(src_image, (center_x, center_y), (center_x + 5, center_y + 5), (0, 0, 255), 1, 4)
         x_left, x_right = int(max(center_x - 150, 0)), int(min(center_x + 150, src_image_x - 1))
-        y_left, y_right = int(max(center_y - 150, 0)), int(min(center_y + 150, src_image_y - 1))
-        cv2.rectangle(src_image, (x_left, y_left), (x_right, y_right), (0, 255, 0), 1, 4)  # 画出一个矩形框
+        y_top, y_bottom = int(max(center_y - 150, 0)), int(min(center_y + 150, src_image_y - 1))
+        cv2.rectangle(src_image, (x_left, y_top), (x_right, y_bottom), (0, 255, 0), 1, 4)  # 画出一个矩形框
 
-        pic = frame[100:400, 100:400]  # 截取图像的一部分
+        pic = src_image[y_top:y_bottom, x_left:x_right]  # 截取图像的一部分
         cv2.imshow("pic1", pic)
 
         pic = cv2.resize(pic, (100, 100))  # 将图像缩放到指定的大小
