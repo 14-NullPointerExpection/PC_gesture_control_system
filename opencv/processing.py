@@ -8,7 +8,7 @@ import camera
 from os import listdir
 
 
-def processingPic(file_pathname, file_pathname_new):#处理数据集图片
+def processingPic(file_pathname, file_pathname_new):  # 处理数据集图片
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(True, 1, min_detection_confidence=0.3, min_tracking_confidence=0.3)
@@ -19,7 +19,7 @@ def processingPic(file_pathname, file_pathname_new):#处理数据集图片
         for f in os.listdir(n):
             image = cv2.imread(n + '/' + f)
 
-            #image = cv2.resize(image, (100, 100))
+            # image = cv2.resize(image, (100, 100))
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
