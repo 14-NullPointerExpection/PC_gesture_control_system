@@ -14,13 +14,14 @@ class ControlMouse:
     is_useful = True
     stop_moving_time = 0
     hands
+
     def __init__(self):
         pag.FAILSAFE = False
         mp_drawing = mp.solutions.drawing_utils
         mp_hands = mp.solutions.hands
-        self.hands = mp_hands.Hands(False,1, min_detection_confidence=0.3, min_tracking_confidence=0.3)
+        self.hands = mp_hands.Hands(False, 1, min_detection_confidence=0.3, min_tracking_confidence=0.3)
 
-    def processImg(self,image):  # 处理图片
+    def processImg(self, image):  # 处理图片
         x8 = 0  # 食指的坐标 是百分比 要乘以屏幕的宽高才得到最终的坐标
         y8 = 0
         x12 = 0
@@ -73,7 +74,7 @@ class ControlMouse:
                 if self.is_useful:
                     if x_pre - 10 < x_real < x_pre + 10 and y_pre - 10 < y_real < y_pre + 10:
                         duration += 1
-                        #print("没动" + str(duration))
+                        # print("没动" + str(duration))
 
                         if abs(x8 - x12) * 2560 < 80 and abs(y8 - y12) * 1600 < 80 and duration > 3:
                             print(abs(x8 - x12), abs(y8 - y12))
@@ -82,7 +83,7 @@ class ControlMouse:
                             duration = 0
 
                     else:
-                        #_thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
+                        # _thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
 
                         _thread.start_new_thread(self.scrollScreen, (y_pre, y_real))
                         # mousemove(x_pre, y_pre, x_real, y_real)
@@ -109,14 +110,14 @@ class ControlMouse:
             if cv2.waitKey(10) == ord('0'):
                 break
 
-    def mousemove(self,x_p, y_p, x_r, y_r):  # 鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
+    def mousemove(self, x_p, y_p, x_r, y_r):  # 鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
         x_m = x_r - x_p
         y_m = y_r - y_p
         d = 0.1
-        #print(x_m, y_m)
+        # print(x_m, y_m)
         if abs(x_m) > 370 or abs(y_m) > 270:
 
-            #print("快速移动")
+            # print("快速移动")
             x_m = int(x_m * 4)
             y_m = int(y_m * 3.5)
             pag.moveRel(x_m, y_m, duration=0.25)
@@ -125,12 +126,12 @@ class ControlMouse:
 
             self.is_useful = False
         elif abs(x_m) > 200 and abs(y_m) > 150:
-            #print("中速移动")
+            # print("中速移动")
             x_m = int(x_m * 3.4)
             y_m = int(y_m * 2.6)
             pag.moveRel(x_m, y_m, duration=d)
         elif abs(x_m) < 150 and abs(y_m) < 120:
-            #print("慢速移动")
+            # print("慢速移动")
             x_m = int(x_m * 0.7)
             y_m = int(y_m * 0.5)
             pag.moveRel(x_m, y_m, duration=d)
@@ -140,7 +141,7 @@ class ControlMouse:
             pag.moveRel(x_m, y_m, duration=d)
         return x_r, y_r
 
-    def hand_mask(self,image, results):  # 画出手的骨架
+    def hand_mask(self, image, results):  # 画出手的骨架
         imgHeight = image.shape[0]
         imgWeight = image.shape[1]
         if results.multi_hand_landmarks:  # 如果有手
@@ -213,14 +214,14 @@ class ControlMouse:
                     cv2.line(image, (x0, y0), (x17, y17), (128, 128, 128), 2)  # 手掌
         return image
 
-    def scrollScreen(self,y_pre, y_real):
+    def scrollScreen(self, y_pre, y_real):
         y_m = y_real - y_pre
         print(y_m)
         if abs(y_m) > 500:
             print("滑动")
-            pag.scroll(int(y_m*1.5))
+            pag.scroll(int(y_m * 1.5))
 
 
 if __name__ == '__main__':
-    c=ControlMouse()
+    c = ControlMouse()
     c.opencamera()

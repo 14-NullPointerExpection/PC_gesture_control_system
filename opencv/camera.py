@@ -180,22 +180,59 @@ def process_img(image):  # 图像的预处理
     return black
 
 
+# def move_mouse(x_p, y_p, x_r, y_r):  # 鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
+#     x_m = x_r - x_p
+#     y_m = y_r - y_p
+#     d = 0.1
+#     if abs(x_m) > 370 or abs(y_m) > 270:
+#         print("快速移动")
+#         x_m = int(x_m * 4)
+#         y_m = int(y_m * 3.5)
+#         pag.moveRel(x_m, y_m, duration=0.25)
+#     elif abs(x_m) > 210 and abs(y_m) > 170:
+#         print("中速移动")
+#         x_m = int(x_m * 3.4)
+#         y_m = int(y_m * 2.6)
+#         pag.moveRel(x_m, y_m, duration=d)
+#     elif abs(x_m) < 150 and abs(y_m) < 120:
+#         print("慢速移动")
+#         x_m = int(x_m * 0.7)
+#         y_m = int(y_m * 0.5)
+#         pag.moveRel(x_m, y_m, duration=d)
+#     else:
+#         x_m = int(x_m * 2.5)
+#         y_m = int(y_m * 2.0)
+#         pag.moveRel(x_m, y_m, duration=d)
+#     return x_r, y_r
+
+is_useful = True
+stop_moving_time = 0
+
+
 def move_mouse(x_p, y_p, x_r, y_r):  # 鼠标移动 x_p:手指上一次位置 x_r:手指现在位置
+    global is_useful
+    global stop_moving_time
     x_m = x_r - x_p
     y_m = y_r - y_p
     d = 0.1
+    # print(x_m, y_m)
     if abs(x_m) > 370 or abs(y_m) > 270:
-        print("快速移动")
+
+        # print("快速移动")
         x_m = int(x_m * 4)
         y_m = int(y_m * 3.5)
         pag.moveRel(x_m, y_m, duration=0.25)
-    elif abs(x_m) > 210 and abs(y_m) > 170:
-        print("中速移动")
+
+        stop_moving_time = time.time()
+
+        is_useful = False
+    elif abs(x_m) > 200 and abs(y_m) > 150:
+        # print("中速移动")
         x_m = int(x_m * 3.4)
         y_m = int(y_m * 2.6)
         pag.moveRel(x_m, y_m, duration=d)
     elif abs(x_m) < 150 and abs(y_m) < 120:
-        print("慢速移动")
+        # print("慢速移动")
         x_m = int(x_m * 0.7)
         y_m = int(y_m * 0.5)
         pag.moveRel(x_m, y_m, duration=d)
@@ -211,10 +248,7 @@ def scroll_screen(y_pre, y_real):
     print(y_m)
     if abs(y_m) > 500:
         print("滑动")
-        if y_m > 0:
-            pag.scroll(500)
-        else:
-            pag.scroll(-500)
+        pag.scroll(int(y_m * 1.5))
 
 
 def open_camera(model_path):
@@ -255,7 +289,7 @@ def open_camera(model_path):
                         pag.click()
                         stay_duration = 0
                 else:
-                    # _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
+                    _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
                     pass
 
             elif mode == 1:
@@ -273,7 +307,7 @@ def open_camera(model_path):
         x_left, x_right = int(max(center_x - 150, 0)), int(min(center_x + 150, src_image_x - 1))
         y_top, y_bottom = int(max(center_y - 150, 0)), int(min(center_y + 150, src_image_y - 1))
         cv2.rectangle(src_image, (x_left, y_top), (x_right, y_bottom), (0, 255, 0), 1, 4)  # 画出一个矩形框
-
+        cv2.putText(src_image, 'move' if mode == 1 else 'slide', (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
         pic = src_image[y_top:y_bottom, x_left:x_right]  # 截取图像的一部分
         cv2.imshow("pic1", pic)
 
@@ -293,9 +327,7 @@ def open_camera(model_path):
 
         classId = np.argmax(out)
         print(classId)
-        if class_name[classId] == '5' and (time.time() - change_mode_pretime > 10):
-            print('-' * 50)
-            print(time.time() - change_mode_pretime)
+        if class_name[classId] == '5' and (time.time() - change_mode_pretime > 3):
             mode = (1 if mode == 0 else 0)
             print('改变模式为:', mode)
             change_mode_pretime = time.time()
