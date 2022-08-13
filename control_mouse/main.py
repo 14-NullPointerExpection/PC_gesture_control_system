@@ -73,7 +73,7 @@ class ControlMouse:
                 if self.is_useful:
                     if x_pre - 10 < x_real < x_pre + 10 and y_pre - 10 < y_real < y_pre + 10:
                         duration += 1
-                        print("没动" + str(duration))
+                        #print("没动" + str(duration))
 
                         if abs(x8 - x12) * 2560 < 80 and abs(y8 - y12) * 1600 < 80 and duration > 3:
                             print(abs(x8 - x12), abs(y8 - y12))
@@ -82,9 +82,9 @@ class ControlMouse:
                             duration = 0
 
                     else:
-                        _thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
+                        #_thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
 
-                        # _thread.start_new_thread(scrollScreen, (y_pre, y_real))
+                        _thread.start_new_thread(self.scrollScreen, (y_pre, y_real))
                         # mousemove(x_pre, y_pre, x_real, y_real)
 
                         duration = 0
@@ -113,9 +113,10 @@ class ControlMouse:
         x_m = x_r - x_p
         y_m = y_r - y_p
         d = 0.1
+        #print(x_m, y_m)
         if abs(x_m) > 370 or abs(y_m) > 270:
 
-            print("快速移动")
+            #print("快速移动")
             x_m = int(x_m * 4)
             y_m = int(y_m * 3.5)
             pag.moveRel(x_m, y_m, duration=0.25)
@@ -123,13 +124,13 @@ class ControlMouse:
             self.stop_moving_time = time.time()
 
             self.is_useful = False
-        elif abs(x_m) > 210 and abs(y_m) > 170:
-            print("中速移动")
+        elif abs(x_m) > 200 and abs(y_m) > 150:
+            #print("中速移动")
             x_m = int(x_m * 3.4)
             y_m = int(y_m * 2.6)
             pag.moveRel(x_m, y_m, duration=d)
         elif abs(x_m) < 150 and abs(y_m) < 120:
-            print("慢速移动")
+            #print("慢速移动")
             x_m = int(x_m * 0.7)
             y_m = int(y_m * 0.5)
             pag.moveRel(x_m, y_m, duration=d)
@@ -156,6 +157,7 @@ class ControlMouse:
                 for i, lm in enumerate(hand_landmarks.landmark):  # 遍历所有手的关节点
                     xPos = int(imgWeight * lm.x)  # 将坐标转化为整数
                     yPos = int(imgHeight * lm.y)
+                    print(lm.z)
 
                     if i < 5:
                         if pre_x != 0:
@@ -216,10 +218,7 @@ class ControlMouse:
         print(y_m)
         if abs(y_m) > 500:
             print("滑动")
-            if y_m > 0:
-                pag.scroll(500)
-            else:
-                pag.scroll(-500)
+            pag.scroll(int(y_m*1.5))
 
 
 if __name__ == '__main__':
