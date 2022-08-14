@@ -8,7 +8,6 @@ from cv2 import dnn
 import numpy as np
 import mediapipe as mp
 import pyautogui as pag
-import tensorflow as tf
 
 mp_drawing = mp.solutions.drawing_utils  # 加载手势识别的一些参数
 mp_hands = mp.solutions.hands
@@ -168,7 +167,7 @@ def get_position(image):  # 获取手指的骨架坐标
 
 def process_img(image):  # 图像的预处理
     black = np.zeros(image.shape, dtype=np.uint8)  # 创建一个黑色的图像
-    image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)  # 将图像的颜色空间转换为RGB
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # 将图像的颜色空间转换为RGB
     image.flags.writeable = False
     results = hands.process(image)  # 进行手的识别 调用的api
     image.flags.writeable = True
@@ -252,7 +251,7 @@ def scroll_screen(y_pre, y_real):
 
 
 def open_camera(model_path):
-    class_name = ['1', '2', '5']
+    class_name = ['0', 'up', 'left', 'right']
     net = dnn.readNetFromTensorflow(model_path)  # 加载模型
     cap = cv2.VideoCapture(1)
     # cap.set(cv2.CAP_PROP_FRAME_COUNT, 1)
@@ -286,10 +285,10 @@ def open_camera(model_path):
                     if abs(x8 - x12) * 2560 < 80 and abs(y8 - y12) * 1600 < 80 and stay_duration > 3:
                         print(abs(x8 - x12), abs(y8 - y12))
                         print("点击")
-                        pag.click()
+                        # pag.click()
                         stay_duration = 0
                 else:
-                    _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
+                    # _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
                     pass
 
             elif mode == 1:
@@ -307,7 +306,8 @@ def open_camera(model_path):
         x_left, x_right = int(max(center_x - 150, 0)), int(min(center_x + 150, src_image_x - 1))
         y_top, y_bottom = int(max(center_y - 150, 0)), int(min(center_y + 150, src_image_y - 1))
         cv2.rectangle(src_image, (x_left, y_top), (x_right, y_bottom), (0, 255, 0), 1, 4)  # 画出一个矩形框
-        cv2.putText(src_image, 'move' if mode == 1 else 'slide', (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
+        cv2.putText(src_image, 'move' if mode == 1 else 'slide', (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255),
+                    2)
         pic = src_image[y_top:y_bottom, x_left:x_right]  # 截取图像的一部分
         cv2.imshow("pic1", pic)
 
@@ -326,7 +326,7 @@ def open_camera(model_path):
         out = out.flatten()
 
         classId = np.argmax(out)
-        print(classId)
+        print(class_name[classId])
         if class_name[classId] == '5' and (time.time() - change_mode_pretime > 3):
             mode = (1 if mode == 0 else 0)
             print('改变模式为:', mode)

@@ -7,7 +7,7 @@ def check_images(s_dir):  # 检查图片的格式
     bad_images = []
     bad_ext = []
     s_list = os.listdir(s_dir)
-    ext_list = ['jpg', 'png', 'jpeg', 'gif', 'bmp']  # list of acceptable extensions
+    ext_list = ['jpg', 'png', 'jpeg', 'gif', 'bmp']  # 可用的扩展名
     for klass in s_list:
         klass_path = os.path.join(s_dir, klass)
         print('processing class directory ', klass)
