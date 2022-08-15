@@ -11,7 +11,7 @@ import pyautogui as pag
 
 mp_drawing = mp.solutions.drawing_utils  # 加载手势识别的一些参数
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(False, min_detection_confidence=0.5, min_tracking_confidence=0.5)
+hands = mp_hands.Hands(False, min_detection_confidence=0.3, min_tracking_confidence=0.3)
 pyautogui.FAILSAFE = False
 
 
@@ -253,7 +253,7 @@ def scroll_screen(y_pre, y_real):
 def open_camera(model_path):
     class_name = ['0', 'up', 'left', 'right']
     net = dnn.readNetFromTensorflow(model_path)  # 加载模型
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     # cap.set(cv2.CAP_PROP_FRAME_COUNT, 1)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
@@ -274,27 +274,28 @@ def open_camera(model_path):
         src_image = cv2.flip(src_image, 1)
         cv2.imshow('bone_pic', bone_pic)
 
-        # 控制部分
-        if x8 != 0 and y8 != 0:
-            x_real = (int(2560 * x8))
-            y_real = (int(1600 * y8))
-            if mode == 0:
-                if x_pre - 10 < x_real < x_pre + 10 and y_pre - 10 < y_real < y_pre + 10:
-                    stay_duration += 1
-                    print("没动" + str(stay_duration))
-                    if abs(x8 - x12) * 2560 < 80 and abs(y8 - y12) * 1600 < 80 and stay_duration > 3:
-                        print(abs(x8 - x12), abs(y8 - y12))
-                        print("点击")
-                        # pag.click()
-                        stay_duration = 0
-                else:
-                    # _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
-                    pass
 
-            elif mode == 1:
-                scroll_screen(y_pre, y_real)
-            x_pre = x_real
-            y_pre = y_real
+        # 控制部分
+        # if x8 != 0 and y8 != 0:
+        #     x_real = (int(2560 * x8))
+        #     y_real = (int(1600 * y8))
+        #     if mode == 0:
+        #         if x_pre - 10 < x_real < x_pre + 10 and y_pre - 10 < y_real < y_pre + 10:
+        #             stay_duration += 1
+        #             print("没动" + str(stay_duration))
+        #             if abs(x8 - x12) * 2560 < 80 and abs(y8 - y12) * 1600 < 80 and stay_duration > 3:
+        #                 print(abs(x8 - x12), abs(y8 - y12))
+        #                 print("点击")
+        #                 # pag.click()
+        #                 stay_duration = 0
+        #         else:
+        #             # _thread.start_new_thread(move_mouse, (x_pre, y_pre, x_real, y_real))
+        #             pass
+        #
+        #     elif mode == 1:
+        #         scroll_screen(y_pre, y_real)
+        #     x_pre = x_real
+        #     y_pre = y_real
         src_image_y, src_image_x = src_image.shape[:-1]
         center_x, center_y = get_center(src_image)  # 获取中心坐标
         print(center_x, center_y)
@@ -303,12 +304,12 @@ def open_camera(model_path):
         center_x = int(center_x)
         center_y = int(center_y)
         cv2.rectangle(src_image, (center_x, center_y), (center_x + 5, center_y + 5), (0, 0, 255), 1, 4)
-        x_left, x_right = int(max(center_x - 150, 0)), int(min(center_x + 150, src_image_x - 1))
-        y_top, y_bottom = int(max(center_y - 150, 0)), int(min(center_y + 150, src_image_y - 1))
+        x_left, x_right = int(max(center_x - 200, 0)), int(min(center_x + 200, src_image_x - 1))
+        y_top, y_bottom = int(max(center_y - 200, 0)), int(min(center_y + 200, src_image_y - 1))
         cv2.rectangle(src_image, (x_left, y_top), (x_right, y_bottom), (0, 255, 0), 1, 4)  # 画出一个矩形框
         cv2.putText(src_image, 'move' if mode == 1 else 'slide', (5, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255),
                     2)
-        pic = src_image[y_top:y_bottom, x_left:x_right]  # 截取图像的一部分
+        pic = bone_pic[y_top:y_bottom, x_left:x_right]  # 截取图像的一部分
         cv2.imshow("pic1", pic)
 
         pic = cv2.resize(pic, (100, 100))  # 将图像缩放到指定的大小
@@ -341,5 +342,5 @@ def open_camera(model_path):
         pTime = cTime  # 得到这一帧结束时的时间
         cv2.putText(src_image, f"FPS:{int(fps)}", (30, 50), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 2)
         cv2.imshow("pic", src_image)
-        if cv2.waitKey(10) == ord('0'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
