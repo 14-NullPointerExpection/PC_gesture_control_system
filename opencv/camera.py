@@ -9,7 +9,7 @@ import numpy as np
 import mediapipe as mp
 import pyautogui as pag
 
-mp_drawing = mp.solutions.drawing_utils  # 加载手势识别的一些参数
+# mp_drawing = mp.solutions.drawing_utils  # 加载手势识别的一些参数
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(False, min_detection_confidence=0.3, min_tracking_confidence=0.3)
 pyautogui.FAILSAFE = False
