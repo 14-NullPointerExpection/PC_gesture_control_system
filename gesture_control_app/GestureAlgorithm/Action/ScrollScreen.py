@@ -3,10 +3,10 @@ Author:匡俊骅
 Description:对屏幕进行滚动操作
 """
 import pyautogui as pag
-import Action.BaseAction
+from GestureAlgorithm.Action.BaseAction import BaseAction
 
 
-class ScrollScreen(Action.BaseAction.BaseAction):
+class ScrollScreen(BaseAction):
 
     def __init__(self):
         super().__init__()

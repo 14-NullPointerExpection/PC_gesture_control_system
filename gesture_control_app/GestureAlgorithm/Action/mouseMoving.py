@@ -6,7 +6,7 @@ Description:鼠标的移动类
 import time
 import pyautogui as pag
 import logging
-import Action.BaseAction
+from GestureAlgorithm.Action.BaseAction import BaseAction
 pag.FAILSAFE = False
 
 
@@ -15,7 +15,7 @@ pag.FAILSAFE = False
 '''
 
 
-class MouseMoving(Action.BaseAction.BaseAction):
+class MouseMoving(BaseAction):
     def __init__(self):
         super().__init__()
         # # 鼠标应该停止移动的时间点
