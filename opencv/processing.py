@@ -22,7 +22,9 @@ def processingPic(file_pathname, file_pathname_new):  # 处理数据集图片
             # image = cv2.resize(image, (100, 100))
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
             image.flags.writeable = False
+
 
             results = hands.process(image)
 
