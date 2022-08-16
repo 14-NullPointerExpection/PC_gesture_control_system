@@ -1,29 +1,14 @@
 """
 author: GYH
-Description: 实现摄像头图像识别的相关操作
+desc: 实现摄像头图像识别的相关操作
 """
-import _thread
 
 import cv2 as cv
 import numpy as np
 from cv2 import dnn
 import mediapipe as mp
-import logging
 
 
-# 单例的装饰器
-def Singleton(cls):
-    _instance = {}
-
-    def _singleton(*args, **kargs):
-        if cls not in _instance:
-            _instance[cls] = cls(*args, **kargs)
-        return _instance[cls]
-
-    return _singleton
-
-
-@Singleton
 class Camera:
     def __init__(self, model_path):
         # 加载模型
@@ -84,7 +69,6 @@ class Camera:
             cv.line(black_image, (points[0][0], points[0][1]), (points[0 + 1][0], points[0 + 1][1]), (128, 128, 128), 4)
             cv.line(black_image, (points[5][0], points[5][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
             cv.line(black_image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
-
         return black_image
 
     # 根据骨架图和获取的关键点，获取感兴趣的区域
@@ -128,20 +112,15 @@ class Camera:
 
     # 手势识别全操作
     def gesture_recognition(self, image):
-        logging.info("critical_points")
-
         critical_points = self.get_critical_hands_points(image)
         if len(critical_points):
             bone_image = self.get_bone_image(image)
             roi_image = self.get_roi(bone_image)
             class_id = self.categorize_image(roi_image)
-            logging.log(logging.DEBUG, class_id)
-
 
 
 if __name__ == '__main__':
-    camera = Camera('../frozen_graph.pb')
+    camera = Camera('../../opencv/frozen_graph.pb')
     while True:
         pic = camera.get_frame_image()
-        _thread.start_new_thread(camera.gesture_recognition, (pic,))
-        # camera.gesture_recognition(pic)
+        camera.gesture_recognition(pic)
