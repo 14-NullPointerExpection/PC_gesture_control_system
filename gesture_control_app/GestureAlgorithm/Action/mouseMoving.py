@@ -7,8 +7,8 @@ import time
 import pyautogui as pag
 import logging
 from GestureAlgorithm.Action.BaseAction import BaseAction
-pag.FAILSAFE = False
 
+pag.FAILSAFE = False
 
 '''
 鼠标的移动类
@@ -18,22 +18,22 @@ pag.FAILSAFE = False
 class MouseMoving(BaseAction):
     def __init__(self):
         super().__init__()
-        # # 鼠标应该停止移动的时间点
-        # self._stop_time = 0
-        # # 鼠标停止移动的持续时间
-        # self._STOP_DURATION = 0.5
-        # # 鼠标是否可以移动
-        # self._can_move = True
-        # 鼠标上次的位置
-
         self._last_x = 0
         self._last_y = 0
+        self._last_click_time = 0
+        self._CLICK_DURATION = 0.8
+
+    def try_click(self, points):
+        if time.time() - self._last_click_time > self._CLICK_DURATION:
+            if abs(points[8][0] - points[12][0]) * 2560 < 80 and abs(points[8][1] - points[12][1]) * 1600 < 80:
+                pag.click()
 
     # x_r是当前鼠标的x坐标，y_r是当前鼠标的y坐标
     def action(self, points):
-        x_r = points[8][0]*2560
-        y_r = points[8][1]*1600
-
+        x_r = points[8][0] * 2560
+        y_r = points[8][1] * 1600
+        # 尝试进行点击
+        self.try_click(points)
         # 如果是第一次进入这个函数，则将鼠标的位置设置为当前的位置
         if self._last_x == 0 and self._last_y == 0:
             self._last_x = x_r
@@ -75,4 +75,3 @@ class MouseMoving(BaseAction):
         # 更新上次鼠标的位置
         self._last_x = x_r
         self._last_y = y_r
-    
