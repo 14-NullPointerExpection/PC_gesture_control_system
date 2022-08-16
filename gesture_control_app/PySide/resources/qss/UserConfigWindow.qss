@@ -1,0 +1,16 @@
+
+.QPushButton {
+    background-color: #97eff9;
+}
+.QLabel {
+    background-color: #fff;
+}
+QWidget#display_board {
+    background-color: #000;
+}
+QLabel#label_select {
+    background-color: #fff;
+}
+QWidget#display_area {
+    background-color: #fff;
+}
