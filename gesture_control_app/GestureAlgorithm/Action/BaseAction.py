@@ -1,4 +1,4 @@
-class Action:
+class BaseAction:
     def __init__(self):
         # 应该停止移动的时间点
         self._stop_time = 0

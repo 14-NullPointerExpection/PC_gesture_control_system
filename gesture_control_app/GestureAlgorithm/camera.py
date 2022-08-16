@@ -2,13 +2,14 @@
 author: GYH
 desc: 实现摄像头图像识别的相关操作
 """
+import time
 
 import cv2 as cv
 import numpy as np
 from cv2 import dnn
 import mediapipe as mp
 import _thread
-from Action import mouseMoving,ScrollScreen
+from Action import mouseMoving, ScrollScreen
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -24,7 +25,7 @@ class Camera:
         # 加载模型
         self.model = dnn.readNetFromTensorflow(model_path)
         # 设置类别名
-        self.class_names = ['1', '2', '3', '4']
+        self.class_names = class_names
         # 设置摄像头
         self.capture = cv.VideoCapture(0)
         self.capture.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
@@ -35,6 +36,12 @@ class Camera:
         self.points = []
         self.mode = mode
         self.mouse_status = 0
+        # 记录开始改变状态的时间
+        self.change_begin_time = 0
+        # 需要保持该手势持续的时间,以改变状态
+        self.keep_time = 3
+        self.mouse_moving = mouseMoving.MouseMoving()
+        self.scroll_screen = ScrollScreen.ScrollScreen()
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
@@ -87,6 +94,7 @@ class Camera:
     def get_roi(self, image):
         points = self.points
         image_height, image_width = image.shape[0], image.shape[1]
+
         # 获取中心点坐标
         center_x, center_y = points[9]
         center_x *= image_width
@@ -119,20 +127,31 @@ class Camera:
         return self.class_names[class_id]
 
     # 切换当前的鼠标操控模式
-    def change_mouse_status(self):
-        self.mouse_status = self.mouse_status ^ 1
+    def change_mouse_status(self, class_id):
+        if class_id == '5':
+            # 如果开始的时间为0,就赋上现在的时间为初值
+            if self.change_begin_time == 0:
+                self.change_begin_time = time.time()
+            else:
+                # 如果保持的时间超过需要的时间,就改变状态
+                if time.time() - self.change_begin_time > self.keep_time:
+                    self.mouse_status = self.mouse_status ^ 1
+                    print('change')
+                    self.change_begin_time = 0
+        else:
+            self.change_begin_time = 0
 
     # 根据传入的分类，执行某些操作
-    def execute_action(self, class_id):
+    def execute_action(self):
+
         # 鼠标模式的操作
         if self.mode == MOUSE_CONTROL_MODE:
-            if self.class_names[class_id] == '5':
-                self.change_mouse_status()
             if self.mouse_status == MOUSE_MOVING:
-                action = mouseMoving.MouseMoving()
+
+                action = self.mouse_moving
                 action.action(self.points)
             elif self.mouse_status == SCROLL_SCREEN:
-                action = ScrollScreen.ScrollScreen()
+                action = self.scroll_screen
                 action.action(self.points)
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
@@ -141,17 +160,28 @@ class Camera:
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
         critical_points = self.get_critical_hands_points(image)
-        class_id = None
+
         if len(critical_points):
+            # 识别出骨架图
             bone_image = self.get_bone_image(image)
+            cv.imshow('bone', bone_image)
+
+
+
+
+            # 截取手部的ROI
             roi_image = self.get_roi(bone_image)
+            # 送入神经网络进行识别
             class_id = self.categorize_image(roi_image)
-            # 进行操作
-            self.execute_action(class_id)
+            # 根据识别的结果判断模式的切换与否
+            self.change_mouse_status(class_id)
+
 
 if __name__ == '__main__':
-    camera = Camera('../frozen_graph.pb')
+    camera = Camera('../0ulr.pb', class_names=['0', '5', '6', '7'], mode=MOUSE_CONTROL_MODE)
     while True:
         pic = camera.get_frame_image()
-        _thread.start_new_thread(camera.gesture_recognition, (pic,))
+        camera.gesture_recognition(pic)
+        if len(camera.points):
+            _thread.start_new_thread(camera.execute_action, ())
         cv.waitKey(50)
