@@ -4,6 +4,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import PySide2.QtCore as QtCore
 import sys
+import test
 
 class GestureFloatingWindow(QWidget):
     def __init__(self, parent=None):
@@ -24,10 +25,11 @@ class GestureFloatingWindow(QWidget):
         self.window_width = 200
         self.window_height = 250
 
-        self.startTimer(200)
-        self.points = [[-3, 138], [27, 114], [48, 72], [62, 35], [77, 15], [19, 6], [31, -44], [36, -76], [40, -105],
-                       [0, 0], [2, -59], [3, -96], [1, -126], [-16, 8], [-25, -44], [-30, -77], [-35, -106], [-31, 27],
-                       [-42, -8], [-49, -33], [-54, -58]]
+        # self.test = test.myThread()
+        # self.test.start()
+
+        self.startTimer(100)
+        self.points = [[6, 187], [29, 142], [27, 82], [-2, 43], [-30, 18], [28, 0], [36, -77], [39, -125], [39, -167], [0, 0], [-15, -78], [-28, -127], [-40, -169], [-21, 21], [-35, -10], [-22, 33], [-13, 65], [-37, 53], [-46, 26], [-35, 52], [-24, 74]]
         # self.points = self.points*0.75
         for i in range(len(self.points)):
             self.points[i][0] = self.points[i][0]*0.75
@@ -38,32 +40,53 @@ class GestureFloatingWindow(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
 
-        # painter.scale(0.75, 0.75)
-        painter.setPen(QPen(QColor(0, 255, 255), 4, Qt.SolidLine))
+        # painter.scale(0.75, 0.75)、
+        # 骨架
+        painter.setPen(QPen(QColor(128, 128, 128), 4, Qt.SolidLine))
+        painter.drawLine(self.points[0][0] + 100, self.points[0][1] + 100, self.points[5][0] + 100,
+                         self.points[5][1] + 100)
+        painter.drawLine(self.points[0][0] + 100, self.points[0][1] + 100, self.points[17][0] + 100,
+                         self.points[17][1] + 100)
+        # 尾指
+        painter.setPen(QPen(QColor(128, 128, 0), 4, Qt.SolidLine))
+        painter.drawLine(self.points[17][0] + 100, self.points[17][1] + 100, self.points[18][0] + 100,
+                         self.points[18][1] + 100)
+        painter.drawLine(self.points[18][0] + 100, self.points[18][1] + 100, self.points[19][0] + 100,
+                         self.points[19][1] + 100)
+        painter.drawLine(self.points[19][0] + 100, self.points[19][1] + 100, self.points[20][0] + 100,
+                         self.points[20][1] + 100)
+
+        # 无名指
+        painter.setPen(QPen(QColor(0, 128, 128), 4, Qt.SolidLine))
+
+        painter.drawLine(self.points[13][0] + 100, self.points[13][1] + 100, self.points[14][0] + 100,
+                         self.points[14][1] + 100)
+        painter.drawLine(self.points[14][0] + 100, self.points[14][1] + 100, self.points[15][0] + 100,
+                         self.points[15][1] + 100)
+        painter.drawLine(self.points[15][0] + 100, self.points[15][1] + 100, self.points[16][0] + 100,
+                         self.points[16][1] + 100)
+
+        # 中指
+        painter.setPen(QPen(QColor(128, 0, 128), 4, Qt.SolidLine))
+        painter.drawLine(self.points[9][0] + 100, self.points[9][1] + 100, self.points[10][0] + 100,
+                         self.points[10][1] + 100)
+        painter.drawLine(self.points[10][0] + 100, self.points[10][1] + 100, self.points[11][0] + 100,
+                         self.points[11][1] + 100)
+        painter.drawLine(self.points[11][0] + 100, self.points[11][1] + 100, self.points[12][0] + 100,
+                         self.points[12][1] + 100)
+
+        # 食指
+        painter.setPen(QPen(QColor(255, 0, 0), 4, Qt.SolidLine))
+        for i in range(5, 8):
+            painter.drawLine(self.points[i][0] + 100, self.points[i][1] + 100, self.points[i + 1][0] + 100,
+                             self.points[i + 1][1] + 100)
+
+        painter.setPen(QPen(QColor(0, 255, 0), 4, Qt.SolidLine))
+        # 拇指
         for i in range(4):
             painter.drawLine(self.points[i][0]+100, self.points[i][1]+100, self.points[i+1][0]+100, self.points[i+1][1]+100)
 
-        painter.setPen(QPen(QColor(255, 0, 255), 4, Qt.SolidLine))
-        painter.drawLine(self.points[0][0]+100, self.points[0][1]+100, self.points[5][0]+100, self.points[5][1]+100)
-        for i in range(5,8):
-            painter.drawLine(self.points[i][0]+100, self.points[i][1]+100, self.points[i+1][0]+100, self.points[i+1][1]+100)
 
-        painter.setPen(QPen(QColor(128, 255, 0), 4, Qt.SolidLine))
-        painter.drawLine(self.points[9][0]+100, self.points[9][1]+100, self.points[10][0]+100, self.points[10][1]+100)
-        painter.drawLine(self.points[10][0]+100, self.points[10][1]+100, self.points[11][0]+100, self.points[11][1]+100)
-        painter.drawLine(self.points[11][0]+100, self.points[11][1]+100, self.points[12][0]+100, self.points[12][1]+100)
-
-        painter.setPen(QPen(QColor(0,128,255), 4, Qt.SolidLine))
-
-        painter.drawLine(self.points[13][0]+100, self.points[13][1]+100, self.points[14][0]+100, self.points[14][1]+100)
-        painter.drawLine(self.points[14][0]+100, self.points[14][1]+100, self.points[15][0]+100, self.points[15][1]+100)
-        painter.drawLine(self.points[15][0]+100, self.points[15][1]+100, self.points[16][0]+100, self.points[16][1]+100)
-
-        painter.setPen(QPen(QColor(255, 0, 0), 4, Qt.SolidLine))
-        painter.drawLine(self.points[0][0]+100, self.points[0][1]+100, self.points[17][0]+100, self.points[17][1]+100)
-        painter.drawLine(self.points[17][0]+100, self.points[17][1]+100, self.points[18][0]+100, self.points[18][1]+100)
-        painter.drawLine(self.points[18][0]+100, self.points[18][1]+100, self.points[19][0]+100, self.points[19][1]+100)
-        painter.drawLine(self.points[19][0]+100, self.points[19][1]+100, self.points[20][0]+100, self.points[20][1]+100)
 
         # # 设置画笔宽度
         # painter.setPen(QPen(QColor(0, 0, 0), 4, Qt.SolidLine))
@@ -83,9 +106,7 @@ class GestureFloatingWindow(QWidget):
 
 
     def timerEvent(self, event) -> None:
-        if self.pred_value>10:
-            return
-        self.pred_value += 1
+
         self.update()
 
     def enterEvent(self, event):
