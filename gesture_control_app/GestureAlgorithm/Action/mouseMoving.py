@@ -1,23 +1,27 @@
-'''
+"""
 Author:匡俊骅
 Description:鼠标的移动类
-'''
+"""
 
 import time
 import pyautogui as pag
 import logging
+from action import Action
 
 '''
 鼠标的移动类
 '''
-class MouseMoving:
+
+
+class MouseMoving(Action):
     def __init__(self):
-        # 鼠标应该停止移动的时间点
-        self._stop_time = 0
-        # 鼠标停止移动的持续时间
-        self._STOP_DURATION = 0.5
-        # 鼠标是否可以移动
-        self._can_move = True
+        super().__init__()
+        # # 鼠标应该停止移动的时间点
+        # self._stop_time = 0
+        # # 鼠标停止移动的持续时间
+        # self._STOP_DURATION = 0.5
+        # # 鼠标是否可以移动
+        # self._can_move = True
         # 鼠标上次的位置
         self._last_x = 0
         self._last_y = 0

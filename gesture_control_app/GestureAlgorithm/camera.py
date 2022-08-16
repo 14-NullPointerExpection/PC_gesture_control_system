@@ -7,10 +7,20 @@ import cv2 as cv
 import numpy as np
 from cv2 import dnn
 import mediapipe as mp
+import _thread
+from Action import mouseMoving,ScrollScreen
+
+# 定义模式对应的常量
+MOUSE_CONTROL_MODE = 0
+SHORTCUTS_MODE = 1
+# 定义鼠标状态对应的变量
+MOUSE_MOVING = 0
+SCROLL_SCREEN = 1
 
 
 class Camera:
-    def __init__(self, model_path):
+    def __init__(self, model_path, class_names, mode):
+
         # 加载模型
         self.model = dnn.readNetFromTensorflow(model_path)
         # 设置类别名
@@ -23,6 +33,8 @@ class Camera:
         self.hands = mp.solutions.hands.Hands(False, min_detection_confidence=0.3, min_tracking_confidence=0.3)
         # 关键坐标点（原始）
         self.points = []
+        self.mode = mode
+        self.mouse_status = 0
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
@@ -106,21 +118,40 @@ class Camera:
         class_id = np.argmax(result)
         return self.class_names[class_id]
 
-    # 修改当前的操控模式
-    def setmode(self, mode):
-        pass
+    # 切换当前的鼠标操控模式
+    def change_mouse_status(self):
+        self.mouse_status = self.mouse_status ^ 1
 
-    # 手势识别全操作
+    # 根据传入的分类，执行某些操作
+    def execute_action(self, class_id):
+        # 鼠标模式的操作
+        if self.mode == MOUSE_CONTROL_MODE:
+            if self.class_names[class_id] == '5':
+                self.change_mouse_status()
+            if self.mouse_status == MOUSE_MOVING:
+                action = mouseMoving.MouseMoving()
+                action.action(self.points)
+            elif self.mouse_status == SCROLL_SCREEN:
+                action = ScrollScreen.ScrollScreen()
+                action.action(self.points)
+        # 快捷指令模式
+        elif self.mode == SHORTCUTS_MODE:
+            pass
+
+    # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
         critical_points = self.get_critical_hands_points(image)
+        class_id = None
         if len(critical_points):
             bone_image = self.get_bone_image(image)
             roi_image = self.get_roi(bone_image)
             class_id = self.categorize_image(roi_image)
-
+            # 进行操作
+            self.execute_action(class_id)
 
 if __name__ == '__main__':
-    camera = Camera('../../opencv/frozen_graph.pb')
+    camera = Camera('../frozen_graph.pb')
     while True:
         pic = camera.get_frame_image()
-        camera.gesture_recognition(pic)
+        _thread.start_new_thread(camera.gesture_recognition, (pic,))
+        cv.waitKey(50)
