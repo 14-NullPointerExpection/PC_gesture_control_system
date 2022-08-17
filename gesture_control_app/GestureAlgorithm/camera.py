@@ -9,7 +9,7 @@ import numpy as np
 from cv2 import dnn
 import mediapipe as mp
 import _thread
-from Action import mouseMoving, ScrollScreen
+from GestureAlgorithm.Action import mouseMoving, ScrollScreen
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -175,10 +175,14 @@ class Camera:
             self.change_mouse_status(class_id)
 
 
-if __name__ == '__main__':
-    camera = Camera('../125.pb', class_names=['1', '2', '5'], mode=MOUSE_CONTROL_MODE)
+def start(camera):
     while True:
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
         if len(camera.points):
             camera.execute_action(camera.points, )
+
+
+if __name__ == '__main__':
+    camera = Camera('../125.pb', class_names=['1', '2', '5'], mode=MOUSE_CONTROL_MODE)
+    start(camera)

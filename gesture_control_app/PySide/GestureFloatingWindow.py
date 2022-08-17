@@ -5,20 +5,24 @@ from PySide2.QtGui import *
 import PySide2.QtCore as QtCore
 import sys
 from FloatingWindow import FloatingWindow
+from GestureAlgorithm import camera
+from GestureAlgorithm.camera import Camera
+import _thread
+
 
 class GestureFloatingWindow(FloatingWindow):
-    def __init__(self,camera):
+    def __init__(self, camera):
         super().__init__()
         self.camera = camera
-        
-        self._points = self.camera.points.copy()
-        for i in range(len(self._points)):
-            self._points[i][0] = self._points[i][0] * 0.75
-            self._points[i][1] = self._points[i][1] * 0.75
 
-        self.pred_value = 0
+        self._points = self.camera.points.copy()
+        if len(self._points):
+            for i in range(len(self._points)):
+                self._points[i] = (self._points[i][0] * 0.75, self._points[i][1] * 0.75)
 
     def paintEvent(self, event):
+        if not self._points:
+            return
         painter = QPainter(self)
 
         # painter.scale(0.75, 0.75)
@@ -65,7 +69,8 @@ class GestureFloatingWindow(FloatingWindow):
         painter.setPen(QPen(QColor(0, 255, 0), 4, Qt.SolidLine))
         # 拇指
         for i in range(4):
-            painter.drawLine(self._points[i][0] + 100, self._points[i][1] + 100, self._points[i + 1][0] + 100, self._points[i + 1][1] + 100)
+            painter.drawLine(self._points[i][0] + 100, self._points[i][1] + 100, self._points[i + 1][0] + 100,
+                             self._points[i + 1][1] + 100)
 
         # # 分割线
         painter.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
@@ -73,19 +78,19 @@ class GestureFloatingWindow(FloatingWindow):
 
         # 设置字体大小
         painter.setFont(QFont('微软雅黑', 13))
-        painter.drawText(25,235,'当前预测值 : '+ str(self.pred_value))
+        painter.drawText(25, 235, '当前预测值 : ' + str(self.camera.predicted_value))
 
     def timerEvent(self, event) -> None:
         self._points = self.camera.points.copy()
+
+        if not len(self._points):
+            return
         for i in range(len(self._points)):
-            self._points[i][0] = self._points[i][0] * 0.75
-            self._points[i][1] = self._points[i][1] * 0.75
+            self._points[i] = (self._points[i][0] * 0.75, self._points[i][1] * 0.75)
         self.update()
 
 
-
 if __name__ == '__main__':
-
     # 设置屏幕自适应
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
@@ -94,11 +99,14 @@ if __name__ == '__main__':
     screen_width = app.primaryScreen().geometry().width()
     screen_height = app.primaryScreen().geometry().height()
 
-    gui = GestureFloatingWindow()
+    c = Camera('../125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+    _thread.start_new_thread(camera.start, (c,))
+    gui = GestureFloatingWindow(c)
+
     # 设置最初出现的位置
     window_width = 200
     window_height = 250
-    gui.setGeometry(screen_width - window_width - 10, screen_height//2 - 300, window_width, window_height)
+    gui.setGeometry(screen_width - window_width - 10, screen_height // 2 - 300, window_width, window_height)
     # 设置坐标中心点
 
     gui.show()
