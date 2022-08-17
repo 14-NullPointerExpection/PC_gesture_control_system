@@ -12,7 +12,7 @@ from components.SystemConfigWindow import SystemConfigWindow
 from utils.PropertiesHandler import PropertyHandler
 
 # 设置PySide文件夹为当前工作目录
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 
 class MainWindow(QMainWindow):
@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(None, '错误', '配置文件已在其他文件中打开, 请关闭后重试')
             self.close()
         # 引入样式
-        with open('resources/qss/MainWindow.qss', 'r') as f:
+        with open('PySide/resources/qss/MainWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
 
 

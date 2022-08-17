@@ -23,7 +23,7 @@ class UserConfigWindow(QLabel):
         self.initUI()
 
         # 引入qss文件
-        with open('resources/qss/UserConfigWindow.qss', 'r') as f:
+        with open('PySide/resources/qss/UserConfigWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
 
 
