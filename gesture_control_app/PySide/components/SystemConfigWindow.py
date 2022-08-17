@@ -18,7 +18,7 @@ class SystemConfigWindow(QWidget):
         self.initUI()
 
         # 引入qss文件
-        with open('gesture_control_app/PySide/resources/qss/SystemConfigWindow.qss', 'r') as f:
+        with open('resources/qss/SystemConfigWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
 
     def initUI(self):

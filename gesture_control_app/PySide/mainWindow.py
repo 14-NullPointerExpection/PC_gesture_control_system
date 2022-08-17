@@ -6,8 +6,12 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
+import os
 from components.UserConfigWindow import UserConfigWindow
 from components.SystemConfigWindow import SystemConfigWindow
+
+# 设置PySide文件夹为当前工作目录
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 class MainWindow(QMainWindow):
@@ -15,7 +19,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle('手势识别')
         # 引入样式
-        with open('gesture_control_app/PySide/resources/qss/MainWindow.qss', 'r') as f:
+        with open('resources/qss/MainWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
 
         self._user_config_window = UserConfigWindow(self)
