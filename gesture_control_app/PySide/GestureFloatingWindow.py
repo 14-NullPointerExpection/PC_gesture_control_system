@@ -7,10 +7,11 @@ import sys
 from FloatingWindow import FloatingWindow
 
 class GestureFloatingWindow(FloatingWindow):
-    def __init__(self):
+    def __init__(self,camera):
         super().__init__()
-        self._points = [[6, 187], [29, 142], [27, 82], [-2, 43], [-30, 18], [28, 0], [36, -77], [39, -125], [39, -167], [0, 0], [-15, -78], [-28, -127], [-40, -169], [-21, 21], [-35, -10], [-22, 33], [-13, 65], [-37, 53], [-46, 26], [-35, 52], [-24, 74]]
-        # self.points = self.points*0.75
+        self.camera = camera
+        
+        self._points = self.camera.points.copy()
         for i in range(len(self._points)):
             self._points[i][0] = self._points[i][0] * 0.75
             self._points[i][1] = self._points[i][1] * 0.75
@@ -73,6 +74,13 @@ class GestureFloatingWindow(FloatingWindow):
         # 设置字体大小
         painter.setFont(QFont('微软雅黑', 13))
         painter.drawText(25,235,'当前预测值 : '+ str(self.pred_value))
+
+    def timerEvent(self, event) -> None:
+        self._points = self.camera.points.copy()
+        for i in range(len(self._points)):
+            self._points[i][0] = self._points[i][0] * 0.75
+            self._points[i][1] = self._points[i][1] * 0.75
+        self.update()
 
 
 
