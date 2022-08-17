@@ -32,8 +32,10 @@ class GestureFloatingWindow(FloatingWindow):
             return
 
         # painter.scale(0.75, 0.75)
+
         # 骨架
         painter.setPen(QPen(QColor(128, 128, 128), 4, Qt.SolidLine))
+
         painter.drawLine(self._points[0][0] * WINDOW_WIDTH, self._points[0][1] * WINDOW_WIDTH,
                          self._points[5][0] * WINDOW_WIDTH,
                          self._points[5][1] * WINDOW_WIDTH)
@@ -42,40 +44,24 @@ class GestureFloatingWindow(FloatingWindow):
                          self._points[17][1] * WINDOW_WIDTH)
         # 尾指
         painter.setPen(QPen(QColor(128, 128, 0), 4, Qt.SolidLine))
-        painter.drawLine(self._points[17][0] * WINDOW_WIDTH, self._points[17][1] * WINDOW_WIDTH,
-                         self._points[18][0] * WINDOW_WIDTH,
-                         self._points[18][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[18][0] * WINDOW_WIDTH, self._points[18][1] * WINDOW_WIDTH,
-                         self._points[19][0] * WINDOW_WIDTH,
-                         self._points[19][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[19][0] * WINDOW_WIDTH, self._points[19][1] * WINDOW_WIDTH,
-                         self._points[20][0] * WINDOW_WIDTH,
-                         self._points[20][1] * WINDOW_WIDTH)
+        for i in range(17,20):
+             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                         self._points[i+1][0] * WINDOW_WIDTH,
+                         self._points[i+1][1] * WINDOW_WIDTH)
 
         # 无名指
         painter.setPen(QPen(QColor(0, 128, 128), 4, Qt.SolidLine))
-
-        painter.drawLine(self._points[13][0] * WINDOW_WIDTH, self._points[13][1] * WINDOW_WIDTH,
-                         self._points[14][0] * WINDOW_WIDTH,
-                         self._points[14][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[14][0] * WINDOW_WIDTH, self._points[14][1] * WINDOW_WIDTH,
-                         self._points[15][0] * WINDOW_WIDTH,
-                         self._points[15][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[15][0] * WINDOW_WIDTH, self._points[15][1] * WINDOW_WIDTH,
-                         self._points[16][0] * WINDOW_WIDTH,
-                         self._points[16][1] * WINDOW_WIDTH)
+        for i in range(13,16):
+             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                         self._points[i+1][0] * WINDOW_WIDTH,
+                         self._points[i+1][1] * WINDOW_WIDTH)
 
         # 中指
         painter.setPen(QPen(QColor(128, 0, 128), 4, Qt.SolidLine))
-        painter.drawLine(self._points[9][0] * WINDOW_WIDTH, self._points[9][1] * WINDOW_WIDTH,
-                         self._points[10][0] * WINDOW_WIDTH,
-                         self._points[10][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[10][0] * WINDOW_WIDTH, self._points[10][1] * WINDOW_WIDTH,
-                         self._points[11][0] * WINDOW_WIDTH,
-                         self._points[11][1] * WINDOW_WIDTH)
-        painter.drawLine(self._points[11][0] * WINDOW_WIDTH, self._points[11][1] * WINDOW_WIDTH,
-                         self._points[12][0] * WINDOW_WIDTH,
-                         self._points[12][1] * WINDOW_WIDTH)
+        for i in range(9,12):
+            painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                             self._points[i + 1][0] * WINDOW_WIDTH,
+                             self._points[i + 1][1] * WINDOW_WIDTH)
 
         # 食指
         painter.setPen(QPen(QColor(255, 0, 0), 4, Qt.SolidLine))
@@ -84,8 +70,8 @@ class GestureFloatingWindow(FloatingWindow):
                              self._points[i + 1][0] * WINDOW_WIDTH,
                              self._points[i + 1][1] * WINDOW_WIDTH)
 
-        painter.setPen(QPen(QColor(0, 255, 0), 4, Qt.SolidLine))
         # 拇指
+        painter.setPen(QPen(QColor(0, 255, 0), 4, Qt.SolidLine))
         for i in range(4):
             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
                              self._points[i + 1][0] * WINDOW_WIDTH,
