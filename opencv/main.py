@@ -2,8 +2,8 @@ import camera
 import processing
 import pyautogui as pag
 
-# camera.open_camera('F:\\0ulr.pb')
+#camera.open_camera('C:\\Users\\kjhjk\\Desktop\\test\\model\\frozen_model\\125.pb')
 # check.check_images('C:\Users\kjhjk\Desktop\Marcel-Train')
-# processing.processingPic('C:\\Users\\\kjhjk\\Desktop\\Dataset\\new_dataset\\dataSetMin','C:\\Users\\\kjhjk\\Desktop\\Dataset\\new_dataset\\dataSetPro\\trainData')
-# processing.removeBlack('C:\\Users\\\kjhjk\\Desktop\\Dataset\\new_dataset\\dataSetPro\\trainData')
-# processing.getTestData('C:\\Users\\kjhjk\\Desktop\\Dataset\\new_dataset\\dataSetPro\\trainData','C:\\Users\\kjhjk\\Desktop\\Dataset\\new_dataset\\dataSetPro\\testData')
+#processing.processingPic('F:\\156_dataset\\dataSetMin','F:\\156_dataset\\dataSetPro\\trainData')
+#processing.removeBlack('F:\\156_dataset\\dataSetPro\\trainData')
+processing.getTestData('F:\\156_dataset\\dataSetPro\\trainData','F:\\156_dataset\\dataSetPro\\testData')
