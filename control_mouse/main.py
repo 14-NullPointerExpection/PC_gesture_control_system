@@ -83,9 +83,9 @@ class ControlMouse:
                             duration = 0
 
                     else:
-                        # _thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
+                        _thread.start_new_thread(self.mousemove, (x_pre, y_pre, x_real, y_real))
 
-                        _thread.start_new_thread(self.scrollScreen, (y_pre, y_real))
+                        #_thread.start_new_thread(self.scrollScreen, (y_pre, y_real))
                         # mousemove(x_pre, y_pre, x_real, y_real)
 
                         duration = 0
@@ -93,7 +93,6 @@ class ControlMouse:
                     cur_time = time.time()
                     if cur_time - self.stop_moving_time > 0.6:
                         self.is_useful = True
-
                         self.stop_moving_time = 0
                         print("重新开始运动")
                 x_pre = x_real

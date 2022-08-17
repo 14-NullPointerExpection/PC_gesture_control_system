@@ -142,17 +142,17 @@ class Camera:
             self.change_begin_time = 0
 
     # 根据传入的分类，执行某些操作
-    def execute_action(self):
+    def execute_action(self,points):
 
         # 鼠标模式的操作
         if self.mode == MOUSE_CONTROL_MODE:
             if self.mouse_status == MOUSE_MOVING:
-
                 action = self.mouse_moving
-                action.action(self.points)
+                print("kaishyidong1")
+                action.action(points)
             elif self.mouse_status == SCROLL_SCREEN:
                 action = self.scroll_screen
-                action.action(self.points)
+                action.action(points)
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
             pass
@@ -164,11 +164,7 @@ class Camera:
         if len(critical_points):
             # 识别出骨架图
             bone_image = self.get_bone_image(image)
-            cv.imshow('bone', bone_image)
-
-
-
-
+            #cv.imshow('bone', bone_image)
             # 截取手部的ROI
             roi_image = self.get_roi(bone_image)
             # 送入神经网络进行识别
@@ -178,10 +174,10 @@ class Camera:
 
 
 if __name__ == '__main__':
-    camera = Camera('../0ulr.pb', class_names=['0', '5', '6', '7'], mode=MOUSE_CONTROL_MODE)
+    camera = Camera('../125.pb', class_names=['1','2','5'], mode=MOUSE_CONTROL_MODE)
     while True:
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
         if len(camera.points):
-            _thread.start_new_thread(camera.execute_action, ())
-        cv.waitKey(50)
+            camera.execute_action(camera.points,)
+
