@@ -9,6 +9,10 @@ from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 import _thread
 
+# 设置窗口的大小
+WINDOW_WIDTH = 200
+WINDOW_HEIGHT = 250
+
 
 class GestureFloatingWindow(FloatingWindow):
     def __init__(self, camera):
@@ -21,56 +25,71 @@ class GestureFloatingWindow(FloatingWindow):
                 self._points[i] = (self._points[i][0] * 0.75, self._points[i][1] * 0.75)
 
     def paintEvent(self, event):
-        if not self._points:
-            return
         painter = QPainter(self)
+        if not self._points:
+            painter.setFont(QFont('微软雅黑', 20))
+            painter.drawText(30, 125, '识别不到手')
+            return
 
         # painter.scale(0.75, 0.75)
         # 骨架
         painter.setPen(QPen(QColor(128, 128, 128), 4, Qt.SolidLine))
-        painter.drawLine(self._points[0][0] + 100, self._points[0][1] + 100, self._points[5][0] + 100,
-                         self._points[5][1] + 100)
-        painter.drawLine(self._points[0][0] + 100, self._points[0][1] + 100, self._points[17][0] + 100,
-                         self._points[17][1] + 100)
+        painter.drawLine(self._points[0][0] * WINDOW_WIDTH, self._points[0][1] * WINDOW_WIDTH,
+                         self._points[5][0] * WINDOW_WIDTH,
+                         self._points[5][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[0][0] * WINDOW_WIDTH, self._points[0][1] * WINDOW_WIDTH,
+                         self._points[17][0] * WINDOW_WIDTH,
+                         self._points[17][1] * WINDOW_WIDTH)
         # 尾指
         painter.setPen(QPen(QColor(128, 128, 0), 4, Qt.SolidLine))
-        painter.drawLine(self._points[17][0] + 100, self._points[17][1] + 100, self._points[18][0] + 100,
-                         self._points[18][1] + 100)
-        painter.drawLine(self._points[18][0] + 100, self._points[18][1] + 100, self._points[19][0] + 100,
-                         self._points[19][1] + 100)
-        painter.drawLine(self._points[19][0] + 100, self._points[19][1] + 100, self._points[20][0] + 100,
-                         self._points[20][1] + 100)
+        painter.drawLine(self._points[17][0] * WINDOW_WIDTH, self._points[17][1] * WINDOW_WIDTH,
+                         self._points[18][0] * WINDOW_WIDTH,
+                         self._points[18][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[18][0] * WINDOW_WIDTH, self._points[18][1] * WINDOW_WIDTH,
+                         self._points[19][0] * WINDOW_WIDTH,
+                         self._points[19][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[19][0] * WINDOW_WIDTH, self._points[19][1] * WINDOW_WIDTH,
+                         self._points[20][0] * WINDOW_WIDTH,
+                         self._points[20][1] * WINDOW_WIDTH)
 
         # 无名指
         painter.setPen(QPen(QColor(0, 128, 128), 4, Qt.SolidLine))
 
-        painter.drawLine(self._points[13][0] + 100, self._points[13][1] + 100, self._points[14][0] + 100,
-                         self._points[14][1] + 100)
-        painter.drawLine(self._points[14][0] + 100, self._points[14][1] + 100, self._points[15][0] + 100,
-                         self._points[15][1] + 100)
-        painter.drawLine(self._points[15][0] + 100, self._points[15][1] + 100, self._points[16][0] + 100,
-                         self._points[16][1] + 100)
+        painter.drawLine(self._points[13][0] * WINDOW_WIDTH, self._points[13][1] * WINDOW_WIDTH,
+                         self._points[14][0] * WINDOW_WIDTH,
+                         self._points[14][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[14][0] * WINDOW_WIDTH, self._points[14][1] * WINDOW_WIDTH,
+                         self._points[15][0] * WINDOW_WIDTH,
+                         self._points[15][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[15][0] * WINDOW_WIDTH, self._points[15][1] * WINDOW_WIDTH,
+                         self._points[16][0] * WINDOW_WIDTH,
+                         self._points[16][1] * WINDOW_WIDTH)
 
         # 中指
         painter.setPen(QPen(QColor(128, 0, 128), 4, Qt.SolidLine))
-        painter.drawLine(self._points[9][0] + 100, self._points[9][1] + 100, self._points[10][0] + 100,
-                         self._points[10][1] + 100)
-        painter.drawLine(self._points[10][0] + 100, self._points[10][1] + 100, self._points[11][0] + 100,
-                         self._points[11][1] + 100)
-        painter.drawLine(self._points[11][0] + 100, self._points[11][1] + 100, self._points[12][0] + 100,
-                         self._points[12][1] + 100)
+        painter.drawLine(self._points[9][0] * WINDOW_WIDTH, self._points[9][1] * WINDOW_WIDTH,
+                         self._points[10][0] * WINDOW_WIDTH,
+                         self._points[10][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[10][0] * WINDOW_WIDTH, self._points[10][1] * WINDOW_WIDTH,
+                         self._points[11][0] * WINDOW_WIDTH,
+                         self._points[11][1] * WINDOW_WIDTH)
+        painter.drawLine(self._points[11][0] * WINDOW_WIDTH, self._points[11][1] * WINDOW_WIDTH,
+                         self._points[12][0] * WINDOW_WIDTH,
+                         self._points[12][1] * WINDOW_WIDTH)
 
         # 食指
         painter.setPen(QPen(QColor(255, 0, 0), 4, Qt.SolidLine))
         for i in range(5, 8):
-            painter.drawLine(self._points[i][0] + 100, self._points[i][1] + 100, self._points[i + 1][0] + 100,
-                             self._points[i + 1][1] + 100)
+            painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                             self._points[i + 1][0] * WINDOW_WIDTH,
+                             self._points[i + 1][1] * WINDOW_WIDTH)
 
         painter.setPen(QPen(QColor(0, 255, 0), 4, Qt.SolidLine))
         # 拇指
         for i in range(4):
-            painter.drawLine(self._points[i][0] + 100, self._points[i][1] + 100, self._points[i + 1][0] + 100,
-                             self._points[i + 1][1] + 100)
+            painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                             self._points[i + 1][0] * WINDOW_WIDTH,
+                             self._points[i + 1][1] * WINDOW_WIDTH)
 
         # # 分割线
         painter.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
@@ -80,10 +99,11 @@ class GestureFloatingWindow(FloatingWindow):
         painter.setFont(QFont('微软雅黑', 13))
         painter.drawText(25, 235, '当前预测值 : ' + str(self.camera.predicted_value))
 
+    # 定时刷新悬浮窗内容
     def timerEvent(self, event) -> None:
         self._points = self.camera.points.copy()
-
         if not len(self._points):
+            self.update()
             return
         for i in range(len(self._points)):
             self._points[i] = (self._points[i][0] * 0.75, self._points[i][1] * 0.75)
@@ -96,17 +116,14 @@ if __name__ == '__main__':
 
     app = QApplication([])
     # 获取主显示器分辨率
-    screen_width = app.primaryScreen().geometry().width()
-    screen_height = app.primaryScreen().geometry().height()
+    SCREEN_WIDTH = app.primaryScreen().geometry().width()
+    SCREEN_HEIGHT = app.primaryScreen().geometry().height()
 
     c = Camera('../125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
     _thread.start_new_thread(camera.start, (c,))
     gui = GestureFloatingWindow(c)
 
-    # 设置最初出现的位置
-    window_width = 200
-    window_height = 250
-    gui.setGeometry(screen_width - window_width - 10, screen_height // 2 - 300, window_width, window_height)
+    gui.setGeometry(SCREEN_WIDTH - WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 300, WINDOW_WIDTH, WINDOW_HEIGHT)
     # 设置坐标中心点
 
     gui.show()

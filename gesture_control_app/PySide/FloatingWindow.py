@@ -4,9 +4,11 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import PySide2.QtCore as QtCore
 import sys
+
+
 class FloatingWindow(QWidget):
-    def __init__(self,parent = None):
-        super(FloatingWindow,self).__init__(parent)
+    def __init__(self, parent=None):
+        super(FloatingWindow, self).__init__(parent)
         # # 设置窗口无边框； 设置窗口置顶；
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         # 设置透明度(0~1)
@@ -16,24 +18,29 @@ class FloatingWindow(QWidget):
         # self.timer = 0
         self._startPos = None
         self._wmGap = None
+        # 悬浮窗是否隐藏
         self._hidden = False
         dsk = QApplication.primaryScreen()
         self._screen_width = dsk.geometry().width()
         self._screen_height = dsk.geometry().height()
         self.WINDOW_WIDTH = 200
         self.WINDOW_HEIGHT = 250
-
+        # 设置悬浮窗刷新间隔
         self.startTimer(100)
 
+    # 定时刷新悬浮窗
     def timerEvent(self, event) -> None:
         self.update()
 
+    # 鼠标进入悬浮窗
     def enterEvent(self, event):
         self.hideOrShow('show', event)
 
+    # 鼠标离开悬浮窗
     def leaveEvent(self, event):
         self.hideOrShow('hide', event)
 
+    # 判断悬浮窗是否隐藏
     def hideOrShow(self, mode, event):
         # 获取窗口左上角x,y
         pos = self.frameGeometry().topLeft()
@@ -71,6 +78,7 @@ class FloatingWindow(QWidget):
                 event.accept()
                 self._hidden = True
 
+    # 滑动效果
     def startAnimation(self, x, y, mode='show', direction=None):
         animation = QPropertyAnimation(self, b"geometry", self)
         # 滑出动画时长

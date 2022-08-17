@@ -138,7 +138,6 @@ class Camera:
                 # 如果保持的时间超过需要的时间,就改变状态
                 if time.time() - self.change_begin_time > self.keep_time:
                     self.mouse_status = self.mouse_status ^ 1
-                    print('change')
                     self.change_begin_time = 0
         else:
             self.change_begin_time = 0
@@ -150,7 +149,6 @@ class Camera:
         if self.mode == MOUSE_CONTROL_MODE:
             if self.mouse_status == MOUSE_MOVING:
                 action = self.mouse_moving
-                print("kaishyidong1")
                 action.action(points)
             elif self.mouse_status == SCROLL_SCREEN:
                 action = self.scroll_screen

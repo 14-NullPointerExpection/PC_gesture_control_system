@@ -4,10 +4,14 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from FloatingWindow import FloatingWindow
-from gesture_control_app.GestureAlgorithm.camera import Camera
+from GestureAlgorithm.camera import Camera
+from GestureAlgorithm import camera
+import pyautogui as pag
+import _thread
+
 
 class ModelFloatingWindow(FloatingWindow):
-    def __init__(self,camera):
+    def __init__(self, camera):
         super().__init__()
         # super(ModelFloatingWindow, self).__init__(parent)
         self.WINDOW_WIDTH = 200
@@ -20,15 +24,15 @@ class ModelFloatingWindow(FloatingWindow):
         painter.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
         # painter.setpen(QPen(Qt.red, 2, Qt.SolidLine))
         # 设置字体大小
-        painter.setFont(QFont('微软雅黑', 12))
+        painter.setFont(QFont('微软雅黑', 11))
         # 绘制文字
         if self.camera.mode == 0:
-            painter.drawText(10, 50,'当前模式 : 鼠标操控')
-            painter.drawText(10, 100,'当前事件 : ' + self._click_event)
-            painter.drawText(10,150,'鼠标位置 : '+str(self.pos().x())+','+str(self.pos().y()))
+            painter.drawText(10, 50, '当前模式 : 鼠标操控')
+            painter.drawText(10, 100, '当前事件 : ')
+            painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
         elif self.camera.mode == 1:
-            painter.drawText(10, 50,'当前模式 : 屏幕滚动')
-            painter.drawText(10, 100,'当前事件 : ' + self._click_event)
+            painter.drawText(10, 50, '当前模式 : 屏幕滚动')
+            painter.drawText(10, 100, '当前事件 : ' + self._click_event)
 
 
 if __name__ == '__main__':
@@ -39,8 +43,9 @@ if __name__ == '__main__':
     # 获取主显示器分辨率
     screen_width = app.primaryScreen().geometry().width()
     screen_height = app.primaryScreen().geometry().height()
-
-    gui = ModelFloatingWindow()
+    c = Camera('../125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+    _thread.start_new_thread(camera.start, (c,))
+    gui = ModelFloatingWindow(c)
     # 设置最初出现的位置
     window_width = 200
     window_height = 200
