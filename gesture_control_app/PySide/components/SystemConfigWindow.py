@@ -7,6 +7,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 from utils.PropertiesHandler import PropertyHandler
+from utils.MyMessageBox import MyMessageBox
 
 class SystemConfigWindow(QWidget):
     def __init__(self, configs, parent=None):
@@ -21,6 +22,7 @@ class SystemConfigWindow(QWidget):
         self._label_of_sliders = []
         self._spin_boxes = []
         self._button_save = QPushButton(self)
+        self._message_box = None
         self.initUI()
 
         # 引入qss文件
@@ -63,6 +65,7 @@ class SystemConfigWindow(QWidget):
         self._button_save.show()
         self._button_save.setGeometry(QRect(300, 360, 100, 40))
         self._button_save.setText('保存')
+        self._button_save.setCursor(QCursor(Qt.PointingHandCursor))
         self._button_save.clicked.connect(self.save_configs)
     
     def save_configs(self):
@@ -70,6 +73,8 @@ class SystemConfigWindow(QWidget):
             self._configs[self._label_keys[i]] = self._sliders[i].value()
         if PropertyHandler('settings.properties').save_properties(properties=self._configs) is None:
             QMessageBox.warning(None, '错误', '配置文件已在其他文件中打开, 保存失败')
+        else:
+            self._message_box = MyMessageBox('保存成功', 'success', self)
 
 
 if __name__ == '__main__':

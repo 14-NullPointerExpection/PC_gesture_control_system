@@ -66,6 +66,7 @@ class UserConfigWindow(QLabel):
         # 保存按钮样式
         self._button_save.show()
         self._button_save.setGeometry(QRect(self.width()/2-50, self.height()-80, 100, 40))
+        self._button_save.setCursor(Qt.PointingHandCursor)
         self._button_save.setText('保存')
 
 

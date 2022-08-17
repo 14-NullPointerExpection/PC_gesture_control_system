@@ -1,5 +1,6 @@
 '''
     @description: 用于读取和生成properties文件
+    @Date: 2022-08-17
 '''
 
 default_properties = {
@@ -87,4 +88,3 @@ class PropertyHandler:
 
     def save_properties(self, properties):
         return self.generate_properties(properties)
-            

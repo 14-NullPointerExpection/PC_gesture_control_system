@@ -1,6 +1,8 @@
 
 .QPushButton {
     background-color: #97eff9;
+    font-family: 'Microsoft YaHei';
+    font-size: 20px;
 }
 .QPushButton:hover {
     background-color: #bcf6fd;
