@@ -251,7 +251,7 @@ def scroll_screen(y_pre, y_real):
 
 
 def open_camera(model_path):
-    class_name = ['0', 'up', 'left', 'right']
+    class_name = ['1', '5', '6']
     net = dnn.readNetFromTensorflow(model_path)  # 加载模型
     cap = cv2.VideoCapture(0)
     # cap.set(cv2.CAP_PROP_FRAME_COUNT, 1)
@@ -298,7 +298,7 @@ def open_camera(model_path):
         #     y_pre = y_real
         src_image_y, src_image_x = src_image.shape[:-1]
         center_x, center_y = get_center(src_image)  # 获取中心坐标
-        print(center_x, center_y)
+        #print(center_x, center_y)
         center_x *= src_image_x
         center_y *= src_image_y
         center_x = int(center_x)
@@ -325,12 +325,13 @@ def open_camera(model_path):
         net.setInput(blob)  # 输入图片
         out = net.forward()
         out = out.flatten()
+        print(out)
 
         classId = np.argmax(out)
-        print(class_name[classId])
+        #print(class_name[classId])
         if class_name[classId] == '5' and (time.time() - change_mode_pretime > 3):
             mode = (1 if mode == 0 else 0)
-            print('改变模式为:', mode)
+            #print('改变模式为:', mode)
             change_mode_pretime = time.time()
         # print("classId", classId)
         # print("预测结果为：", class_name[classId])

@@ -25,20 +25,21 @@ while True:  # 读取视频的循环
 
         point = [[0 for _ in range(2)] for _ in range(21)]  # 创建一个二维数组，用于存储手的位置)]]
 
+
         if result.multi_hand_landmarks:
             for hand_landmarks in result.multi_hand_landmarks:
                 for i, lm in enumerate(hand_landmarks.landmark):  # 获取手的坐标点
-                    xPos = int(black.shape[0] * lm.x)  # 将坐标转化为整数
-                    yPos = int(black.shape[1] * lm.y)
-                    point[i][0]= xPos
-                    point[i][1]= yPos
+                    # xPos = int(black.shape[0] * lm.x)  # 将坐标转化为整数
+                    # yPos = int(black.shape[1] * lm.y)
+                    point[i][0]= lm.x
+                    point[i][1]= lm.y
             print(point)
-            x = point[9][0]
-            y = point[9][1]
-            for i in range(0, 21):
-                point[i][0] -= x
-                point[i][1] -= y
-            print(point)
+            # x = point[9][0]
+            # y = point[9][1]
+            # for i in range(0, 21):
+            #     point[i][0] -= x
+            #     point[i][1] -= y
+            # print(point)
 
         #         mpDraw.draw_landmarks(img,handLms,mpHands.HAND_CONNECTIONS,handLmStyle,handConStyle)#画出点和线
         #         for i,lm in enumerate(handLms.landmark):

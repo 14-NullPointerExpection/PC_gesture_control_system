@@ -19,7 +19,7 @@ def processingPic(file_pathname, file_pathname_new):  # 处理数据集图片
         for f in os.listdir(n):
             image = cv2.imread(n + '/' + f)
 
-            # image = cv2.resize(image, (100, 100))
+            image = cv2.resize(image, (100, 100))
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
