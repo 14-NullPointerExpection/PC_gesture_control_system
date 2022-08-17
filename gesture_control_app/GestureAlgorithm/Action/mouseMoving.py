@@ -41,14 +41,12 @@ class MouseMoving(BaseAction):
             self._last_x = x_r
             self._last_y = y_r
             return
-        print("没有return")
         # 移动的相对坐标
         x_m = x_r - self._last_x
         y_m = y_r - self._last_y
 
         if self._can_action:
             if abs(x_m) < 10 and abs(y_m) < 10:
-                print('try')
                 self.try_click(points)
             else:
                 _thread.start_new_thread(self.move, (x_m, y_m))
@@ -63,7 +61,6 @@ class MouseMoving(BaseAction):
 
     # 移动鼠标
     def move(self, x_m, y_m):
-        print('move')
         d = 0.1
         if abs(x_m) > 370 or abs(y_m) > 270:
             x_m = int(x_m * 4)
@@ -73,12 +70,12 @@ class MouseMoving(BaseAction):
             self._stop_time = time.time()
             self._can_action = False
         elif abs(x_m) > 200 and abs(y_m) > 150:
-            # print("中速移动")
+            # 中速移动
             x_m = int(x_m * 3.4)
             y_m = int(y_m * 2.6)
             pag.moveRel(x_m, y_m, duration=d)
         elif abs(x_m) < 150 and abs(y_m) < 120:
-            # print("慢速移动")
+            # 慢速移动
             x_m = int(x_m * 0.7)
             y_m = int(y_m * 0.5)
             pag.moveRel(x_m, y_m, duration=d)

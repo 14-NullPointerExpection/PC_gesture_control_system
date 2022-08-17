@@ -6,52 +6,71 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
+from utils.PropertiesHandler import PropertyHandler
 
 class SystemConfigWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, configs, parent=None):
         super().__init__(parent)
-
-        self._slider_mouse_sensitivity = QSlider(self)
-        self._slider_page_roll_sensitivity = QSlider(self)
-        self._slider_gesture_time = QSlider(self)
+        # 变量
+        self._configs = configs
+        self._labels = ['鼠标灵敏度', '页面滚动灵速率', '手势识别时间']
+        self._label_keys = ['mouse_sensitivity', 'scroll_speed', 'gesture_recognition_speed']
+        # 控件
+        self._display_area = QLabel(self)
+        self._sliders = []
+        self._label_of_sliders = []
+        self._spin_boxes = []
         self._button_save = QPushButton(self)
         self.initUI()
 
         # 引入qss文件
-        with open('gesture_control_app/PySide/resources/qss/SystemConfigWindow.qss', 'r') as f:
+        with open('PySide/resources/qss/SystemConfigWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
 
     def initUI(self):
         # 窗体样式
         self.show()
         self.setGeometry(0, 0, 800, 400)
-        # 滑块样式
-        self._slider_mouse_sensitivity.show()
-        self._slider_mouse_sensitivity.setOrientation(Qt.Horizontal)
-        self._slider_mouse_sensitivity.setGeometry(QRect(300, 150, 200, 30))
+        # 展示区域
+        self._display_area.show()
+        self._display_area.setGeometry(QRect(100, 100, 600, 400))
 
-        self._slider_page_roll_sensitivity.show()
-        self._slider_page_roll_sensitivity.setOrientation(Qt.Horizontal)
-        self._slider_page_roll_sensitivity.setGeometry(QRect(300, 230, 200, 30))
-
-        self._slider_gesture_time.show()
-        self._slider_gesture_time.setOrientation(Qt.Horizontal)
-        self._slider_gesture_time.setGeometry(QRect(300, 310, 200, 30))
+        for i in range(3):
+            self._sliders.append(QSlider(Qt.Horizontal, self._display_area))
+            self._label_of_sliders.append(QLabel(self._display_area))
+            self._spin_boxes.append(QSpinBox(self._display_area))
+            # 滑块
+            self._sliders[i].setGeometry(QRect(170, 10 + i * 50, 250, 30))
+            self._sliders[i].setMinimum(1)
+            self._sliders[i].setMaximum(100)
+            self._sliders[i].setValue(self._configs[self._label_keys[i]])
+            self._sliders[i].valueChanged.connect(self._spin_boxes[i].setValue)
+            self._sliders[i].show()
+            # 滑块标签
+            self._label_of_sliders[i].setGeometry(QRect(10, 10 + i * 50, 150, 30))
+            self._label_of_sliders[i].setText(self._labels[i])
+            self._label_of_sliders[i].show()
+            # 滑块值
+            self._spin_boxes[i].setGeometry(QRect(430, 10 + i * 50, 50, 30))
+            self._spin_boxes[i].setMinimum(1)
+            self._spin_boxes[i].setMaximum(100)
+            self._spin_boxes[i].setValue(self._configs[self._label_keys[i]])
+            self._spin_boxes[i].valueChanged.connect(self._sliders[i].setValue)
+            self._spin_boxes[i].show()
+            
 
         # 按钮样式
         self._button_save.show()
         self._button_save.setGeometry(QRect(300, 360, 100, 40))
         self._button_save.setText('保存')
+        self._button_save.clicked.connect(self.save_configs)
+    
+    def save_configs(self):
+        for i in range(3):
+            self._configs[self._label_keys[i]] = self._sliders[i].value()
+        if PropertyHandler('settings.properties').save_properties(properties=self._configs) is None:
+            QMessageBox.warning(None, '错误', '配置文件已在其他文件中打开, 保存失败')
 
-    def paintEvent(self, event: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setPen(QPen(Qt.black, 2))
-        painter.drawText(QRect(200, 110, 60, 30), Qt.AlignCenter, '鼠标移动')
-        painter.drawText(QRect(230, 145, 60, 30), Qt.AlignCenter, '灵敏度')
-        painter.drawText(QRect(200, 190, 60, 30), Qt.AlignCenter, '页面滚动')
-        painter.drawText(QRect(230, 225, 60, 30), Qt.AlignCenter, '滚动速率')
-        painter.drawText(QRect(200, 270, 60, 30), Qt.AlignCenter, '手势')
-        painter.drawText(QRect(200, 305, 90, 30), Qt.AlignCenter, '手势识别时间')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

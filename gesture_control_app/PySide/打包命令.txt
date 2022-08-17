@@ -1,0 +1,4 @@
+# 先生成spec配置文件
+    pyi-makespec -w MainWindow.py
+# 然后进入PySide目录进行打包
+    pyinstaller MainWindow.spec

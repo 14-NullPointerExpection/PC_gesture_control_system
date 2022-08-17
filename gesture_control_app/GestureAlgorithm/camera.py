@@ -9,7 +9,7 @@ import numpy as np
 from cv2 import dnn
 import mediapipe as mp
 import _thread
-from Action import mouseMoving, ScrollScreen
+from GestureAlgorithm.Action import mouseMoving, ScrollScreen
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -34,6 +34,7 @@ class Camera:
         self.hands = mp.solutions.hands.Hands(False, min_detection_confidence=0.3, min_tracking_confidence=0.3)
         # 关键坐标点（原始）
         self.points = []
+        # 设置模式
         self.mode = mode
         self.mouse_status = 0
         # 记录开始改变状态的时间
@@ -42,6 +43,7 @@ class Camera:
         self.keep_time = 3
         self.mouse_moving = mouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
+        self.predicted_value = None
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
@@ -136,19 +138,17 @@ class Camera:
                 # 如果保持的时间超过需要的时间,就改变状态
                 if time.time() - self.change_begin_time > self.keep_time:
                     self.mouse_status = self.mouse_status ^ 1
-                    print('change')
                     self.change_begin_time = 0
         else:
             self.change_begin_time = 0
 
     # 根据传入的分类，执行某些操作
-    def execute_action(self,points):
+    def execute_action(self, points):
 
         # 鼠标模式的操作
         if self.mode == MOUSE_CONTROL_MODE:
             if self.mouse_status == MOUSE_MOVING:
                 action = self.mouse_moving
-                print("kaishyidong1")
                 action.action(points)
             elif self.mouse_status == SCROLL_SCREEN:
                 action = self.scroll_screen
@@ -160,24 +160,27 @@ class Camera:
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
         critical_points = self.get_critical_hands_points(image)
-
+        self.predicted_value = None
         if len(critical_points):
             # 识别出骨架图
             bone_image = self.get_bone_image(image)
-            #cv.imshow('bone', bone_image)
             # 截取手部的ROI
             roi_image = self.get_roi(bone_image)
             # 送入神经网络进行识别
             class_id = self.categorize_image(roi_image)
+            self.predicted_value = class_id
             # 根据识别的结果判断模式的切换与否
             self.change_mouse_status(class_id)
 
 
-if __name__ == '__main__':
-    camera = Camera('../125.pb', class_names=['1','2','5'], mode=MOUSE_CONTROL_MODE)
+def start(camera):
     while True:
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
         if len(camera.points):
-            camera.execute_action(camera.points,)
+            camera.execute_action(camera.points, )
 
+
+if __name__ == '__main__':
+    camera = Camera('../125.pb', class_names=['1', '2', '5'], mode=MOUSE_CONTROL_MODE)
+    start(camera)

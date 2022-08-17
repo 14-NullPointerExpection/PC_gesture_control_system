@@ -2,6 +2,9 @@
 .QPushButton {
     background-color: #97eff9;
 }
+.QPushButton:hover {
+    background-color: #bcf6fd;
+}
 .QLabel {
     background-color: #fff;
 }
