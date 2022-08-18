@@ -26,7 +26,6 @@ def drawAll(img, buttonList):
     for button in buttonList:
         x, y = button.pos
         w, h = button.size
-
         cvzone.cornerRect(img, (button.pos[0], button.pos[1], button.size[0], button.size[1]),
                           20, rt=0)
         cv2.rectangle(img, button.pos, (x + w, y + h), (195, 150, 94), cv2.FILLED)
@@ -75,6 +74,7 @@ if __name__ == '__main__':
         # lmList, bboxInfo = detector.findPosition(img)
         # _________________________________________
         img = drawAll(img, buttonList)
+
 
         if lmList:
             for button in buttonList:

@@ -32,7 +32,8 @@ class MouseMoving(BaseAction):
 
     # points是手部坐标点的数组
     def action(self, points):
-
+        if len(points)==0:
+            return
         # 当前食指尖的坐标
         x_r = points[8][0] * 2560
         y_r = points[8][1] * 1600

@@ -9,7 +9,7 @@ import numpy as np
 from cv2 import dnn
 import mediapipe as mp
 import _thread
-from GestureAlgorithm.Action import mouseMoving, ScrollScreen
+from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -17,11 +17,19 @@ SHORTCUTS_MODE = 1
 # 定义鼠标状态对应的变量
 MOUSE_MOVING = 0
 SCROLL_SCREEN = 1
+VIRTUAL_KEYBOARD = 2
 
 
 class Camera:
-    def __init__(self, model_path, class_names, mode):
+    _instance_ = {}
 
+    def __new__(cls, model_path, class_names, mode):
+        argu = (model_path, class_names, mode)
+        if argu not in cls._instance_:
+            cls._instance_[argu] = super().__new__(cls)
+        return cls._instance_[argu]
+
+    def __init__(self, model_path, class_names, mode):
         # 加载模型
         self.model = dnn.readNetFromTensorflow(model_path)
         # 设置类别名
@@ -36,7 +44,7 @@ class Camera:
         self.points = []
         # 设置模式
         self.mode = mode
-        self.mouse_status = 0
+        self.mouse_status = MOUSE_MOVING
         # 记录开始改变状态的时间
         self.change_begin_time = 0
         # 需要保持该手势持续的时间,以改变状态
@@ -44,12 +52,15 @@ class Camera:
         self.mouse_moving = mouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
         self.predicted_value = None
+        # 保存的图片
+        self.origin_image = None
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
         is_success, frame = self.capture.read()
         if is_success:
             frame = cv.flip(frame, 1)
+            self.origin_image = frame
             return frame
 
     # 传入一张图像，获取图像中的关键点
@@ -70,27 +81,26 @@ class Camera:
         points = self.points
         height = image.shape[0]
         width = image.shape[1]
-        black_image = np.zeros(image.shape, dtype=np.uint8)
         if len(points):
             # 将点映射到真实图片的位置
             points = list(map(lambda p: (int(p[0] * width), int(p[1] * height)), points))
             for i in range(0, 4):
-                cv.line(black_image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 255, 0), 4)
+                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 255, 0), 4)
             for i in range(5, 8):
-                cv.line(black_image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 0, 255), 4)
+                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 0, 255), 4)
             for i in range(9, 12):
-                cv.line(black_image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 0, 128),
+                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 0, 128),
                         4)
             for i in range(13, 16):
-                cv.line(black_image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 128, 0),
+                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 128, 0),
                         4)
             for i in range(17, 20):
-                cv.line(black_image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 128, 128),
+                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 128, 128),
                         4)
-            cv.line(black_image, (points[0][0], points[0][1]), (points[0 + 1][0], points[0 + 1][1]), (128, 128, 128), 4)
-            cv.line(black_image, (points[5][0], points[5][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
-            cv.line(black_image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
-        return black_image
+            cv.line(image, (points[0][0], points[0][1]), (points[0 + 1][0], points[0 + 1][1]), (128, 128, 128), 4)
+            cv.line(image, (points[5][0], points[5][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
+            cv.line(image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
+        return image
 
     # 根据骨架图和获取的关键点，获取感兴趣的区域
     def get_roi(self, image):
@@ -139,10 +149,13 @@ class Camera:
                 if time.time() - self.change_begin_time > self.keep_time:
                     self.mouse_status = self.mouse_status ^ 1
                     self.change_begin_time = 0
+        elif class_id == '2':
+            self.mouse_status = VIRTUAL_KEYBOARD
+
         else:
             self.change_begin_time = 0
 
-    # 根据传入的分类，执行某些操作
+    # 根据当前的操作模式，执行某些操作
     def execute_action(self, points):
 
         # 鼠标模式的操作
@@ -153,6 +166,11 @@ class Camera:
             elif self.mouse_status == SCROLL_SCREEN:
                 action = self.scroll_screen
                 action.action(points)
+            elif self.mouse_status == VIRTUAL_KEYBOARD:
+                virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
+                virtual_keyboard.set_camera(self)
+
+                virtual_keyboard.action(self.origin_image, points)
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
             pass
@@ -162,8 +180,10 @@ class Camera:
         critical_points = self.get_critical_hands_points(image)
         self.predicted_value = None
         if len(critical_points):
+            # 获取黑色底图
+            black_image = np.zeros(image.shape, dtype=np.uint8)
             # 识别出骨架图
-            bone_image = self.get_bone_image(image)
+            bone_image = self.get_bone_image(black_image)
             # 截取手部的ROI
             roi_image = self.get_roi(bone_image)
             # 送入神经网络进行识别
@@ -177,10 +197,10 @@ def start(camera):
     while True:
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
-        if len(camera.points):
-            camera.execute_action(camera.points, )
+
+        camera.execute_action(camera.points, )
 
 
 if __name__ == '__main__':
-    camera = Camera('../125.pb', class_names=['1', '2', '5'], mode=MOUSE_CONTROL_MODE)
+    camera = Camera('../125.pb', class_names=('1', '2', '5'), mode=MOUSE_CONTROL_MODE)
     start(camera)
