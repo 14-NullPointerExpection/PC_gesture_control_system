@@ -73,9 +73,9 @@ class PropertyHandler:
         for key in default_properties:
             if key not in properties:
                 properties[key] = default_properties[key]
-        properties['mouse_sensitivity'] = self.check_property_intvalue('mouse_sensitivity', properties['mouse_sensitivity'], 1, 10)
-        properties['scroll_speed'] = self.check_property_intvalue('scroll_speed', properties['scroll_speed'], 1, 10)
-        properties['gesture_recognition_speed'] = self.check_property_intvalue('gesture_recognition_speed', properties['gesture_recognition_speed'], 1, 10)
+        properties['mouse_sensitivity'] = self.check_property_intvalue('mouse_sensitivity', properties['mouse_sensitivity'], 1, 100)
+        properties['scroll_speed'] = self.check_property_intvalue('scroll_speed', properties['scroll_speed'], 1, 100)
+        properties['gesture_recognition_speed'] = self.check_property_intvalue('gesture_recognition_speed', properties['gesture_recognition_speed'], 1, 100)
 
     def check_property_intvalue(self, key, value, min_value, max_value):
         try:

@@ -32,28 +32,33 @@ class SystemConfigWindow(QWidget):
     def initUI(self):
         # 窗体样式
         self.show()
-        self.setGeometry(0, 0, 800, 400)
+        self.setGeometry(0, 0, 750, 500)
+        self.setObjectName('SystemConfigWindow')
         # 展示区域
         self._display_area.show()
-        self._display_area.setGeometry(QRect(100, 100, 600, 400))
+        self._display_area.setObjectName('display_area')
+        self._display_area.setGeometry(QRect(0, 0, 750, 500))
+
+        start_x = 100
+        start_y = 100
 
         for i in range(3):
             self._sliders.append(QSlider(Qt.Horizontal, self._display_area))
             self._label_of_sliders.append(QLabel(self._display_area))
             self._spin_boxes.append(QSpinBox(self._display_area))
             # 滑块
-            self._sliders[i].setGeometry(QRect(170, 10 + i * 50, 250, 30))
+            self._sliders[i].setGeometry(QRect(start_x+170, start_y+10 + i * 80, 250, 30))
             self._sliders[i].setMinimum(1)
             self._sliders[i].setMaximum(100)
             self._sliders[i].setValue(self._configs[self._label_keys[i]])
             self._sliders[i].valueChanged.connect(self._spin_boxes[i].setValue)
             self._sliders[i].show()
             # 滑块标签
-            self._label_of_sliders[i].setGeometry(QRect(10, 10 + i * 50, 150, 30))
+            self._label_of_sliders[i].setGeometry(QRect(start_x+10, start_y+10 + i * 80, 150, 30))
             self._label_of_sliders[i].setText(self._labels[i])
             self._label_of_sliders[i].show()
             # 滑块值
-            self._spin_boxes[i].setGeometry(QRect(430, 10 + i * 50, 50, 30))
+            self._spin_boxes[i].setGeometry(QRect(start_x+430, start_y+10 + i * 80, 50, 30))
             self._spin_boxes[i].setMinimum(1)
             self._spin_boxes[i].setMaximum(100)
             self._spin_boxes[i].setValue(self._configs[self._label_keys[i]])
@@ -63,7 +68,7 @@ class SystemConfigWindow(QWidget):
 
         # 按钮样式
         self._button_save.show()
-        self._button_save.setGeometry(QRect(300, 360, 100, 40))
+        self._button_save.setGeometry(QRect(self.width()/2-50, self.height()-80, 100, 40))
         self._button_save.setText('保存')
         self._button_save.setCursor(QCursor(Qt.PointingHandCursor))
         self._button_save.clicked.connect(self.save_configs)
@@ -72,7 +77,7 @@ class SystemConfigWindow(QWidget):
         for i in range(3):
             self._configs[self._label_keys[i]] = self._sliders[i].value()
         if PropertyHandler('settings.properties').save_properties(properties=self._configs) is None:
-            QMessageBox.warning(None, '错误', '配置文件已在其他文件中打开, 保存失败')
+            self._message_box = MyMessageBox('配置文件已在其他文件中打开, 保存失败', 'error', self)
         else:
             self._message_box = MyMessageBox('保存成功', 'success', self)
 

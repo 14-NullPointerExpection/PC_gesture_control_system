@@ -14,8 +14,16 @@ QWidget#display_board {
     background-color: #000;
 }
 QLabel#label_select {
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0);
 }
-QWidget#display_area {
-    background-color: #fff;
+QWidget#display_area, QWidget#UserConfigWindow {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
+                                      stop: 0 #27a6fc, stop: 1 #cce8fa);
+}
+QComboBox {
+    background-color: #88f9df;
+}
+QLabel#label_select, QComboBox {
+    font-size: 20px;
+    font-family: Microsoft YaHei;
 }

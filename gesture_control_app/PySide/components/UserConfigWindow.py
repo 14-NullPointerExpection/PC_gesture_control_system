@@ -30,6 +30,7 @@ class UserConfigWindow(QLabel):
     def initUI(self):
         # 窗体样式
         self.show()
+        self.setObjectName('UserConfigWindow')
         self.setGeometry(0, 0, 750, 500)
 
         # 展示区域
@@ -53,7 +54,7 @@ class UserConfigWindow(QLabel):
             # 下拉框样式
             self._select.append(QComboBox(self._display_area))
             self._select[i].show()
-            self._select[i].setGeometry(QRect(400, 80+i*display_interval, 200, 30))
+            self._select[i].setGeometry(QRect(420, 80+i*display_interval, 200, 30))
             self._select[i].addItem('选项1')
             self._select[i].addItem('选项2')
             # 标签样式

@@ -17,13 +17,13 @@ class MyMessageBox(QLabel):
         self._type = type
         self._parent = parent
         colors = {
-            'info': QColor(100, 100, 100),
-            'error': QColor(255, 0, 0),
+            'info': QColor(237, 242, 252),
+            'error': QColor(254, 240, 240),
             'success': QColor(240, 249, 235)
         }
         font_colors = {
-            'info': 'rgb(255, 255, 255)',
-            'error': 'rgb(255, 255, 255)',
+            'info': 'rgb(144, 147, 153)',
+            'error': 'rgb(245, 108, 108)',
             'success': 'rgb(103, 194, 58)'
         }
         if (type not in colors):
@@ -61,7 +61,7 @@ class MyMessageBox(QLabel):
             point_y = QApplication.desktop().height()//2 - HEIGHT//3*2
         self.move(point_x - WIDTH/2, point_y)
         # 字体
-        font = QFont('Microsoft YaHei', 12, QFont.Bold)
+        font = QFont('Microsoft YaHei', 12)
         self.setFont(font)
         # 字体颜色
         self.setStyleSheet('color: %s' % self._font_color)
