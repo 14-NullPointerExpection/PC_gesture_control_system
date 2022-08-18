@@ -1,3 +1,7 @@
+"""
+author: XP
+desc: 展示手掌骨架图及手势预测值的悬浮窗
+"""
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *

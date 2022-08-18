@@ -1,3 +1,7 @@
+"""
+author: XP
+desc: 悬浮窗的基类, 用于实现悬浮窗的基本功能
+"""
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *

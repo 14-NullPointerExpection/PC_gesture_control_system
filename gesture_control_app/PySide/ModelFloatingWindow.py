@@ -1,3 +1,7 @@
+"""
+author: XP
+desc: 展示当前模式的悬浮窗
+"""
 import sys
 from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import *
