@@ -121,11 +121,13 @@ class VirtualKeyboard(BaseAction):
                     self._can_action = True
                     self._stop_time = 0
 
-        cv2.imshow("keyboard_image", keyboard_image)
-        if self.can_destroy:
-            cv2.destroyWindow('keyboard_image')
-            self.can_destroy = False
-        cv2.waitKey(1)
+        return keyboard_image, self.can_destroy
+
+        # cv2.imshow("keyboard_image", keyboard_image)
+        # if self.can_destroy:
+        #     cv2.destroyWindow('keyboard_image')
+        #     self.can_destroy = False
+        # cv2.waitKey(1)
 
 
 
