@@ -16,14 +16,15 @@ from ModelFloatingWindow import ModelFloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 import threading
+from PySide.MyKeyboard import MyKeyboard
 
 # 设置PySide文件夹为当前工作目录
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 
 # 设置窗口的大小
-FLOATING_WINDOW_WIDTH = 200
-FLOATING_WINDOW_HEIGHT = 250
+FLOATING_WINDOW_WIDTH = 300
+FLOATING_WINDOW_HEIGHT = 300
 
 # 获取主显示器分辨率
 SCREEN_WIDTH = 1000
@@ -62,13 +63,16 @@ class MainWindow(QMainWindow):
         # 相机
         self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
         self._camara_thread = None
+        # 键盘
+        self._keyboard = MyKeyboard(self._camara)
+        self._keyboard.hide()
         # 手势窗体
         self._gesture_window = GestureFloatingWindow(self._camara)
-        self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 300, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
+        self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT+100)
         self._gesture_window.show()
         # 模型窗体
         self._model_window = ModelFloatingWindow(self._camara)
-        self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
+        self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
         self._model_window.show()
         # 其他控件
         self._user_config_window = UserConfigWindow(self)
@@ -96,6 +100,7 @@ class MainWindow(QMainWindow):
         self._tabs.addTab(self._user_config_window, '用户自定义')
         self._tabs.addTab(self._system_config_window, '系统配置')
         self._tabs.setGeometry(QRect(10, 10, 750, 550))
+        self._tabs.changeEvent = self.on_tabs_change
         # 启动按钮样式
         self._btn_launch.show()
         self._btn_launch.setText('启动')
@@ -115,7 +120,11 @@ class MainWindow(QMainWindow):
             # 终止线程
             stop_thread(self._camara_thread)
             self._camara_thread = None
+            self._camara.mouse_status = 1
             self._btn_launch.setText('启动')
+
+    def on_tabs_change(self, event):
+        pass
 
 
     def paintEvent(self, event: QPaintEvent) -> None:

@@ -15,9 +15,9 @@ from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 import _thread
 
-# 设置窗口的大小
 from PySide.MyKeyboard import MyKeyboard
 
+# 设置窗口的大小
 WINDOW_WIDTH = 300
 WINDOW_HEIGHT = 400
 
@@ -30,6 +30,12 @@ class CameraThread(QThread):
 
     def run(self):
         camera.start(self.cam)
+
+    # 终止线程
+    def stop(self):
+        self
+        self.quit()
+        self.wait()
 
 
 
