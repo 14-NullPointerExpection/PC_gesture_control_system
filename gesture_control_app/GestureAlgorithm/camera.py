@@ -2,14 +2,17 @@
 author: GYH
 desc: 实现摄像头图像识别的相关操作
 """
+import sys
 import time
 
 import cv2 as cv
 import numpy as np
+from PySide2.QtWidgets import QApplication
 from cv2 import dnn
 import mediapipe as mp
 import _thread
 from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard
+from PySide.MyKeyboard import MyKeyboard
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -20,14 +23,57 @@ SCROLL_SCREEN = 1
 VIRTUAL_KEYBOARD = 2
 
 
-class Camera:
-    _instance_ = {}
+# 根据骨架图和获取的关键点，获取感兴趣的区域
+def get_roi(image, points):
+    image_height, image_width = image.shape[0], image.shape[1]
 
-    def __new__(cls, model_path, class_names, mode):
-        argu = (model_path, class_names, mode)
-        if argu not in cls._instance_:
-            cls._instance_[argu] = super().__new__(cls)
-        return cls._instance_[argu]
+    # 获取中心点坐标
+    center_x, center_y = points[9]
+    center_x *= image_width
+    center_y *= image_height
+    center_x = int(center_x)
+    center_y = int(center_y)
+    x_left, x_right = int(max(center_x - 200, 0)), int(min(center_x + 200, image_width - 1))
+    y_top, y_bottom = int(max(center_y - 200, 0)), int(min(center_y + 200, image_height - 1))
+    # 截取图片
+    pic = image[y_top:y_bottom, x_left:x_right]
+    return pic
+
+
+# 根据传入的关键点，使用OpenCV绘制骨架图
+def get_bone_image(image, points):
+    height = image.shape[0]
+    width = image.shape[1]
+    if len(points):
+        # 将点映射到真实图片的位置
+        points = list(map(lambda p: (int(p[0] * width), int(p[1] * height)), points))
+        for i in range(0, 4):
+            cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 255, 0), 4)
+        for i in range(5, 8):
+            cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 0, 255), 4)
+        for i in range(9, 12):
+            cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 0, 128),
+                    4)
+        for i in range(13, 16):
+            cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 128, 0),
+                    4)
+        for i in range(17, 20):
+            cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 128, 128),
+                    4)
+        cv.line(image, (points[0][0], points[0][1]), (points[0 + 1][0], points[0 + 1][1]), (128, 128, 128), 4)
+        cv.line(image, (points[5][0], points[5][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
+        cv.line(image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
+    return image
+
+
+class Camera:
+    # _instance_ = {}
+    #
+    # def __new__(cls, model_path, class_names, mode):
+    #     argu = (model_path, class_names, mode)
+    #     if argu not in cls._instance_:
+    #         cls._instance_[argu] = super().__new__(cls)
+    #     return cls._instance_[argu]
 
     def __init__(self, model_path, class_names, mode):
         # 加载模型
@@ -48,12 +94,16 @@ class Camera:
         # 记录开始改变状态的时间
         self.change_begin_time = 0
         # 需要保持该手势持续的时间,以改变状态
-        self.keep_time = 3
+        self.keep_time = 1.5
         self.mouse_moving = mouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
         self.predicted_value = None
         # 保存的图片
         self.origin_image = None
+
+        self.virtual_keyboard = None
+
+
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
@@ -76,49 +126,6 @@ class Camera:
         self.points = points
         return points
 
-    # 根据传入的关键点，使用OpenCV绘制骨架图
-    def get_bone_image(self, image):
-        points = self.points
-        height = image.shape[0]
-        width = image.shape[1]
-        if len(points):
-            # 将点映射到真实图片的位置
-            points = list(map(lambda p: (int(p[0] * width), int(p[1] * height)), points))
-            for i in range(0, 4):
-                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 255, 0), 4)
-            for i in range(5, 8):
-                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 0, 255), 4)
-            for i in range(9, 12):
-                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 0, 128),
-                        4)
-            for i in range(13, 16):
-                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (128, 128, 0),
-                        4)
-            for i in range(17, 20):
-                cv.line(image, (points[i][0], points[i][1]), (points[i + 1][0], points[i + 1][1]), (0, 128, 128),
-                        4)
-            cv.line(image, (points[0][0], points[0][1]), (points[0 + 1][0], points[0 + 1][1]), (128, 128, 128), 4)
-            cv.line(image, (points[5][0], points[5][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
-            cv.line(image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
-        return image
-
-    # 根据骨架图和获取的关键点，获取感兴趣的区域
-    def get_roi(self, image):
-        points = self.points
-        image_height, image_width = image.shape[0], image.shape[1]
-
-        # 获取中心点坐标
-        center_x, center_y = points[9]
-        center_x *= image_width
-        center_y *= image_height
-        center_x = int(center_x)
-        center_y = int(center_y)
-        x_left, x_right = int(max(center_x - 200, 0)), int(min(center_x + 200, image_width - 1))
-        y_top, y_bottom = int(max(center_y - 200, 0)), int(min(center_y + 200, image_height - 1))
-        # 截取图片
-        pic = image[y_top:y_bottom, x_left:x_right]
-        return pic
-
     # 使用神经网络对处理好的图片进行分类操作
     def categorize_image(self, image):
         # 调整图像大小
@@ -139,21 +146,30 @@ class Camera:
         return self.class_names[class_id]
 
     # 切换当前的鼠标操控模式
-    def change_mouse_status(self, class_id):
-        if class_id == '5':
-            # 如果开始的时间为0,就赋上现在的时间为初值
-            if self.change_begin_time == 0:
-                self.change_begin_time = time.time()
-            else:
-                # 如果保持的时间超过需要的时间,就改变状态
-                if time.time() - self.change_begin_time > self.keep_time:
-                    self.mouse_status = self.mouse_status ^ 1
-                    self.change_begin_time = 0
-        elif class_id == '2':
-            self.mouse_status = VIRTUAL_KEYBOARD
+    def change_mouse_status(self, pre_class_id, class_id):
+
+        # 如果当前的模式与前一个不同 则认为是改变的手的样式
+        if pre_class_id != class_id:
+            self.change_begin_time = time.time()
 
         else:
-            self.change_begin_time = 0
+
+            # 如果当前的模式与前一个相同,且时间超过设定的时间，则认为是要改变操作的模式
+            if time.time() - self.change_begin_time > self.keep_time:
+                # 如果当前的是5的话,在鼠标移动与屏幕滚动之间切换
+                if class_id == '5':
+                    if self.mouse_status == MOUSE_MOVING:
+                        self.mouse_status = SCROLL_SCREEN
+                    elif self.mouse_status == SCROLL_SCREEN:
+                        self.mouse_status = MOUSE_MOVING
+
+
+                # 如果当前的是2的话,是切换到键盘
+                elif class_id == '2':
+                    self.mouse_status = VIRTUAL_KEYBOARD
+
+                self.change_begin_time = time.time()
+
 
     # 根据当前的操作模式，执行某些操作
     def execute_action(self, points):
@@ -167,10 +183,21 @@ class Camera:
                 action = self.scroll_screen
                 action.action(points)
             elif self.mouse_status == VIRTUAL_KEYBOARD:
-                virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
-                virtual_keyboard.set_camera(self)
+                if self.virtual_keyboard is None:
+                    self.virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
 
-                virtual_keyboard.action(self.origin_image, points)
+                # if self.my_keyboard == None:
+                #     self.my_keyboard = MyKeyboard()
+                #
+                #
+
+                can_change = self.virtual_keyboard.action(self.origin_image, points)
+                if can_change:
+                    self.mouse_status = MOUSE_MOVING
+                    self.virtual_keyboard = None
+
+
+
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
             pass
@@ -178,29 +205,30 @@ class Camera:
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
         critical_points = self.get_critical_hands_points(image)
-        self.predicted_value = None
         if len(critical_points):
             # 获取黑色底图
             black_image = np.zeros(image.shape, dtype=np.uint8)
             # 识别出骨架图
-            bone_image = self.get_bone_image(black_image)
+            bone_image = get_bone_image(black_image, critical_points)
             # 截取手部的ROI
-            roi_image = self.get_roi(bone_image)
+            roi_image = get_roi(bone_image, critical_points)
             # 送入神经网络进行识别
             class_id = self.categorize_image(roi_image)
-            self.predicted_value = class_id
+
             # 根据识别的结果判断模式的切换与否
-            self.change_mouse_status(class_id)
+            self.change_mouse_status(self.predicted_value, class_id)
+            self.predicted_value = class_id
 
 
 def start(camera):
     while True:
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
-
         camera.execute_action(camera.points, )
 
 
 if __name__ == '__main__':
-    camera = Camera('../125.pb', class_names=('1', '2', '5'), mode=MOUSE_CONTROL_MODE)
+    app = QApplication(sys.argv)
+    camera = Camera('../125.pb', class_names=('1', '2', '5'), mode=MOUSE_MOVING)
     start(camera)
+    sys.exit(app.exec_())

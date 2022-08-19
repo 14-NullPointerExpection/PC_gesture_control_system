@@ -109,7 +109,7 @@ if __name__ == '__main__':
     SCREEN_WIDTH = app.primaryScreen().geometry().width()
     SCREEN_HEIGHT = app.primaryScreen().geometry().height()
 
-    c = Camera('../125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+    c = Camera('../125.pb', class_names=('1', '2', '5'), mode=camera.MOUSE_CONTROL_MODE)
     _thread.start_new_thread(camera.start, (c,))
     gui = GestureFloatingWindow(c)
 

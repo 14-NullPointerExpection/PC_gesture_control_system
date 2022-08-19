@@ -10,21 +10,10 @@ import cvzone
 import pyautogui
 
 from GestureAlgorithm.Action.BaseAction import BaseAction
-from GestureAlgorithm.camera import Camera, MOUSE_CONTROL_MODE, MOUSE_MOVING
+from GestureAlgorithm import camera
+from PySide.MyKeyboard import MyKeyboard
 
 
-def singleton(cls):
-    _instance = {}
-
-    def inner():
-        if cls not in _instance:
-            _instance[cls] = cls()
-        return _instance[cls]
-
-    return inner
-
-
-@singleton
 class VirtualKeyboard(BaseAction):
     class Button:
         def __init__(self, pos, text, size=[85, 85]):
@@ -40,9 +29,9 @@ class VirtualKeyboard(BaseAction):
         self.final_text = ""
         self.camera = None
         self.can_destroy = False
-
-    def set_camera(self, camera):
-        self.camera = camera
+        self.my_keyboard = MyKeyboard()
+        self.my_keyboard.show()
+        print(999999)
 
     def draw_all(self, image, button_list):
         cv2.rectangle(image, (50, 350), (700, 450), (127, 172, 91), cv2.FILLED)
@@ -67,8 +56,7 @@ class VirtualKeyboard(BaseAction):
 
     def action(self, image, points):
 
-
-        bone_image = self.camera.get_bone_image(image)
+        bone_image = camera.get_bone_image(image, points)
 
         button_list = []
         for i in range(len(self.keys)):
@@ -89,7 +77,7 @@ class VirtualKeyboard(BaseAction):
                     # 手指虚点键盘
 
                     if x < point[8][0] < x + w and y < point[8][1] < y + h:
-                        print("虚点",button.text)
+
                         cv2.rectangle(keyboard_image, (x - 5, y - 5), (x + w + 5, y + h + 5), (0, 0, 175), cv2.FILLED)
                         cv2.putText(keyboard_image, button.text, (x + 20, y + 65),
                                     cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 4)
@@ -105,13 +93,12 @@ class VirtualKeyboard(BaseAction):
                             self._can_action = False
                             self._stop_time = time.time()
 
-
                             if button.text == 'DEL':
                                 self.final_text = self.final_text[:-1]
                             elif button.text == 'OK':
                                 pyautogui.typewrite(self.final_text)
                                 self.final_text = ''
-                                self.camera.mouse_status = MOUSE_MOVING
+                                # self.camera.mouse_status = MOUSE_MOVING
                                 self.can_destroy = True
                             else:
                                 self.final_text += button.text
@@ -120,15 +107,16 @@ class VirtualKeyboard(BaseAction):
                 if time.time() - self._stop_time > self._STOP_DURATION:
                     self._can_action = True
                     self._stop_time = 0
+        # cv2.imshow('123',keyboard_image)
 
-        return keyboard_image, self.can_destroy
+        self.my_keyboard.keyboard_image = keyboard_image
+        self.my_keyboard.can_destroy = self.can_destroy
+
+        cv2.waitKey(10)
+        return self.can_destroy
 
         # cv2.imshow("keyboard_image", keyboard_image)
         # if self.can_destroy:
         #     cv2.destroyWindow('keyboard_image')
         #     self.can_destroy = False
         # cv2.waitKey(1)
-
-
-
-
