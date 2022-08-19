@@ -18,8 +18,8 @@ class ModelFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
         # super(ModelFloatingWindow, self).__init__(parent)
-        self.WINDOW_WIDTH = 200
-        self.WINDOW_HEIGHT = 200
+        self.WINDOW_WIDTH = 300
+        self.WINDOW_HEIGHT = 300
         self.camera = camera
 
     def paintEvent(self, event):
@@ -41,7 +41,7 @@ class ModelFloatingWindow(FloatingWindow):
 
 if __name__ == '__main__':
     # 设置屏幕自适应
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     app = QApplication([])
     # 获取主显示器分辨率
@@ -51,9 +51,9 @@ if __name__ == '__main__':
     _thread.start_new_thread(camera.start, (c,))
     gui = ModelFloatingWindow(c)
     # 设置最初出现的位置
-    window_width = 200
-    window_height = 200
-    gui.setGeometry(screen_width - window_width - 10, screen_height // 2, window_width, window_height)
+    window_width = 300
+    window_height = 300
+    gui.setGeometry(screen_width - window_width - 10, screen_height // 2+100, window_width, window_height)
     # 设置坐标中心点
     gui.show()
     sys.exit(app.exec_())

@@ -2,6 +2,7 @@
 Author:匡俊骅
 
 """
+import _thread
 import time
 from time import sleep
 
@@ -13,7 +14,8 @@ from GestureAlgorithm.Action.BaseAction import BaseAction
 from GestureAlgorithm import camera
 from PySide.MyKeyboard import MyKeyboard
 
-
+import cgitb
+cgitb.enable( format = 'text')
 class VirtualKeyboard(BaseAction):
     class Button:
         def __init__(self, pos, text, size=[85, 85]):
@@ -29,9 +31,9 @@ class VirtualKeyboard(BaseAction):
         self.final_text = ""
         self.camera = None
         self.can_destroy = False
-        self.my_keyboard = MyKeyboard()
-        self.my_keyboard.show()
-        print(999999)
+        # self.my_keyboard = MyKeyboard()
+        # self.my_keyboard.show()
+        # print('9999',self.my_keyboard)
 
     def draw_all(self, image, button_list):
         cv2.rectangle(image, (50, 350), (700, 450), (127, 172, 91), cv2.FILLED)
@@ -108,12 +110,16 @@ class VirtualKeyboard(BaseAction):
                     self._can_action = True
                     self._stop_time = 0
         # cv2.imshow('123',keyboard_image)
+        #
+        # self.my_keyboard.keyboard_image = keyboard_image
+        # self.my_keyboard.can_destroy = self.can_destroy
 
-        self.my_keyboard.keyboard_image = keyboard_image
-        self.my_keyboard.can_destroy = self.can_destroy
+        # _thread.start_new_thread(self.my_keyboard.show, ())
+        # self.my_keyboard.show()
+
 
         cv2.waitKey(10)
-        return self.can_destroy
+        return self.can_destroy,keyboard_image
 
         # cv2.imshow("keyboard_image", keyboard_image)
         # if self.can_destroy:

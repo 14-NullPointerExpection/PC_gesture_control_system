@@ -2,6 +2,8 @@
 author: XP
 desc: 展示手掌骨架图及手势预测值的悬浮窗
 """
+import time
+
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -14,8 +16,24 @@ from GestureAlgorithm.camera import Camera
 import _thread
 
 # 设置窗口的大小
-WINDOW_WIDTH = 200
-WINDOW_HEIGHT = 250
+from PySide.MyKeyboard import MyKeyboard
+
+WINDOW_WIDTH = 300
+WINDOW_HEIGHT = 400
+
+
+class CameraThread(QThread):
+    def __init__(self, cam,):
+        super().__init__()
+        self.cam = cam
+
+
+    def run(self):
+        camera.start(self.cam)
+
+
+
+
 
 
 class GestureFloatingWindow(FloatingWindow):
@@ -39,6 +57,7 @@ class GestureFloatingWindow(FloatingWindow):
 
         # 骨架
         painter.setPen(QPen(QColor(128, 128, 128), 4, Qt.SolidLine))
+        print('huahua')
 
         painter.drawLine(self._points[0][0] * WINDOW_WIDTH, self._points[0][1] * WINDOW_WIDTH,
                          self._points[5][0] * WINDOW_WIDTH,
@@ -48,21 +67,21 @@ class GestureFloatingWindow(FloatingWindow):
                          self._points[17][1] * WINDOW_WIDTH)
         # 尾指
         painter.setPen(QPen(QColor(128, 128, 0), 4, Qt.SolidLine))
-        for i in range(17,20):
-             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
-                         self._points[i+1][0] * WINDOW_WIDTH,
-                         self._points[i+1][1] * WINDOW_WIDTH)
+        for i in range(17, 20):
+            painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                             self._points[i + 1][0] * WINDOW_WIDTH,
+                             self._points[i + 1][1] * WINDOW_WIDTH)
 
         # 无名指
         painter.setPen(QPen(QColor(0, 128, 128), 4, Qt.SolidLine))
-        for i in range(13,16):
-             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
-                         self._points[i+1][0] * WINDOW_WIDTH,
-                         self._points[i+1][1] * WINDOW_WIDTH)
+        for i in range(13, 16):
+            painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
+                             self._points[i + 1][0] * WINDOW_WIDTH,
+                             self._points[i + 1][1] * WINDOW_WIDTH)
 
         # 中指
         painter.setPen(QPen(QColor(128, 0, 128), 4, Qt.SolidLine))
-        for i in range(9,12):
+        for i in range(9, 12):
             painter.drawLine(self._points[i][0] * WINDOW_WIDTH, self._points[i][1] * WINDOW_WIDTH,
                              self._points[i + 1][0] * WINDOW_WIDTH,
                              self._points[i + 1][1] * WINDOW_WIDTH)
@@ -83,11 +102,11 @@ class GestureFloatingWindow(FloatingWindow):
 
         # # 分割线
         painter.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
-        painter.drawLine(0, 200, self._screen_width, 200)
+        painter.drawLine(0, 300, self._screen_width, 300)
 
         # 设置字体大小
         painter.setFont(QFont('微软雅黑', 13))
-        painter.drawText(25, 235, '当前预测值 : ' + str(self.camera.predicted_value))
+        painter.drawText(25, 350, '当前预测值 : ' + str(self.camera.predicted_value))
 
     # 定时刷新悬浮窗内容
     def timerEvent(self, event) -> None:
@@ -102,18 +121,22 @@ class GestureFloatingWindow(FloatingWindow):
 
 if __name__ == '__main__':
     # 设置屏幕自适应
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
-    app = QApplication([])
+    app = QApplication()
     # 获取主显示器分辨率
     SCREEN_WIDTH = app.primaryScreen().geometry().width()
     SCREEN_HEIGHT = app.primaryScreen().geometry().height()
 
     c = Camera('../125.pb', class_names=('1', '2', '5'), mode=camera.MOUSE_CONTROL_MODE)
-    _thread.start_new_thread(camera.start, (c,))
+    # _thread.start_new_thread(camera.start, (c,))
+    camera_thread = CameraThread(c)
+    camera_thread.start()
+    time.sleep(1)
     gui = GestureFloatingWindow(c)
-
-    gui.setGeometry(SCREEN_WIDTH - WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 300, WINDOW_WIDTH, WINDOW_HEIGHT)
+    m = MyKeyboard(c)
+    m.hide()
+    gui.setGeometry(SCREEN_WIDTH - WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, WINDOW_WIDTH, WINDOW_HEIGHT)
     # 设置坐标中心点
 
     gui.show()

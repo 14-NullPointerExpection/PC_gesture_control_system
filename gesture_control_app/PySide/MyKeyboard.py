@@ -7,45 +7,47 @@ import sys
 
 
 class MyKeyboard(QWidget):
-    def __init__(self):
+    def __init__(self,cam):
         super().__init__()
         # # 设置窗口无边框； 设置窗口置顶；
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
-        # self.keyboard = VirtualKeyboard()
         self.timer = self.startTimer(10)
 
         self.keyboard_image = None
         self.can_destroy = False
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = pyautogui.size()
+        self.cam = cam
+
 
     def paintEvent(self, event):
+        if self.cam.mouse_status == 2:
 
-        height, width, channel = self.keyboard_image.shape
-        bytesPerline = 3 * width
-        qimage = QImage(self.keyboard_image.data, width, height, bytesPerline, QImage.Format_BGR888)
+            painter = QPainter(self)
+            # painter.scale(0.5, 0.5)
+            keyboard_image = self.cam.keyboard_image
+            if keyboard_image is not None:
+                # 绘图1280*720
+                height, width, channel = keyboard_image.shape
+                bytesPerline = 3 * width
+                qimage = QImage(keyboard_image.data, width, height, bytesPerline, QImage.Format_BGR888)
+                print('----',qimage.width(),qimage.height())
+                print(width,height)
+                self.setGeometry((self.SCREEN_WIDTH - self.width()) / 2, (self.SCREEN_HEIGHT - self.height()) * 0.85, width, height)
+                #self.setGeometry(0,0, width, height)
+                #
+                painter.drawImage(0, 0, qimage)
 
-        painter = QPainter(self)
-
-        if self.keyboard_image is not None:
-            # 绘图1280*720
-            self.setGeometry((self.SCREEN_WIDTH - width) / 2, (self.SCREEN_HEIGHT - height) * 0.85, width, height)
-            painter.drawImage(0, 0, qimage)
 
     def timerEvent(self, event) -> None:
 
-        if self.can_destroy:
+        if self.cam.mouse_status != 2:
             self.hide()
-            self.can_destroy = False
+        else:
+            self.show()
+
         self.update()
 
-    # def action(self, image, points):
-    #     self.image = image
-    #     self.points = points
-    #     self.keyboard_image, self.can_destroy = self.keyboard.action(self.image, self.points)
-    #     if self.timer is not None:
-    #         self.killTimer(self.timer)
-    #
-    #     return self.can_destroy
+
 
 
 if __name__ == '__main__':

@@ -103,6 +103,8 @@ class Camera:
 
         self.virtual_keyboard = None
 
+        self.keyboard_image = None
+
 
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
@@ -183,15 +185,13 @@ class Camera:
                 action = self.scroll_screen
                 action.action(points)
             elif self.mouse_status == VIRTUAL_KEYBOARD:
+
                 if self.virtual_keyboard is None:
                     self.virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
 
-                # if self.my_keyboard == None:
-                #     self.my_keyboard = MyKeyboard()
-                #
-                #
+                can_change, keyboard = self.virtual_keyboard.action(self.origin_image, points)
+                self.keyboard_image = keyboard
 
-                can_change = self.virtual_keyboard.action(self.origin_image, points)
                 if can_change:
                     self.mouse_status = MOUSE_MOVING
                     self.virtual_keyboard = None
