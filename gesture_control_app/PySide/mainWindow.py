@@ -173,6 +173,12 @@ class MainWindow(QMainWindow):
         painter = QPainter(self)
         painter.drawPixmap(self.rect(), QPixmap('PySide/resources/images/bgimage.png'))
 
+    def closeEvent(self, event: QCloseEvent) -> None:
+        # 终止线程
+        if (self._camara_thread is not None):
+            stop_thread(self._camara_thread)
+        # 关闭窗体
+        event.accept()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
