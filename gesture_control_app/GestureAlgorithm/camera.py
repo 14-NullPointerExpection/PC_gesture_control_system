@@ -11,7 +11,7 @@ import numpy as np
 from PySide2.QtWidgets import QApplication
 from cv2 import dnn
 
-from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard, StringAction
+from GestureAlgorithm.Action import MouseMoving, ScrollScreen, VirtualKeyboard, StringAction
 
 # 定义模式对应的常量
 from PySide.utils.PropertiesHandler import PropertyHandler
