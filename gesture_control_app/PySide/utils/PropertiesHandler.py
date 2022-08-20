@@ -3,7 +3,7 @@
     @Date: 2022-08-17
 '''
 
-# from KeyboardMap import KeyboardMap
+from PySide.utils.KeyboardMap import KeyboardMap
 
 
 default_properties = {
@@ -18,15 +18,15 @@ default_properties = {
     'up_action': 'press_key',
     'zero_action': 'press_key',
     # 按键类型
-    'left_action_key': 'none',
-    'right_action_key': 'none',
-    'up_action_key': 'none',
-    'zero_action_key': 'none',
+    'left_action_key': 'LEFT',
+    'right_action_key': 'RIGHT',
+    'up_action_key': 'UP',
+    'zero_action_key': 'DOWN',
     # 打开网址url
-    'left_action_url': 'none',
-    'right_action_url': 'none',
-    'up_action_url': 'none',
-    'zero_action_url': 'none',
+    'left_action_url': '',
+    'right_action_url': '',
+    'up_action_url': '',
+    'zero_action_url': '',
 }
 property_labels = {
     'mouse_sensitivity': '# 鼠标灵敏度',
@@ -116,10 +116,10 @@ class PropertyHandler:
         properties['right_action'] = self.check_action_type(properties['right_action'])
         properties['up_action'] = self.check_action_type(properties['up_action'])
         properties['zero_action'] = self.check_action_type(properties['zero_action'])
-        # properties['left_action_key'] = self.check_action_key(properties['left_action_key'])
-        # properties['right_action_key'] = self.check_action_key(properties['right_action_key'])
-        # properties['up_action_key'] = self.check_action_key(properties['up_action_key'])
-        # properties['zero_action_key'] = self.check_action_key(properties['zero_action_key'])
+        properties['left_action_key'] = self.check_press_key_type('left_action_key', properties['left_action_key'])
+        properties['right_action_key'] = self.check_press_key_type('right_action_key', properties['right_action_key'])
+        properties['up_action_key'] = self.check_press_key_type('up_action_key', properties['up_action_key'])
+        properties['zero_action_key'] = self.check_press_key_type('zero_action_key', properties['zero_action_key'])
 
 
     def check_property_intvalue(self, key, value, min_value, max_value):
@@ -137,12 +137,13 @@ class PropertyHandler:
         else:
             return 'press_key'
     
-    def check_press_key_type(self, key):
-        pass
-        # if KeyboardMap.key_to_ascii.has_key(key):
-        #     return key
-        # else:
-        #     return ''
+    def check_press_key_type(self, property_key, key):
+        k = key.upper()
+        print(k)
+        if k in KeyboardMap['key_to_ascii'].keys():
+            return k
+        else:
+            return default_properties[property_key]
 
     def save_properties(self, properties):
         return self.generate_properties(properties)
