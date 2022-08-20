@@ -32,6 +32,8 @@ SCREEN_HEIGHT = 800
 
 import inspect
 import ctypes
+
+# 以抛出异常的方式终止线程
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
     if not inspect.isclass(exctype):
@@ -57,29 +59,20 @@ class MainWindow(QMainWindow):
             self._message_box = MyMessageBox('配置文件打开失败', 'error')
             self.close()
 
-
-        # 变量
-        self._is_launch = False
-        # 相机
-        self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
-        self._camara_thread = None
-        # 键盘
-        self._keyboard = MyKeyboard(self._camara)
-        self._keyboard.hide()
-        # 手势窗体
-        self._gesture_window = GestureFloatingWindow(self._camara)
-        self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT+100)
-        self._gesture_window.show()
-        # 模型窗体
-        self._model_window = ModelFloatingWindow(self._camara)
-        self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
-        self._model_window.show()
+        # 手势控件
+        self._camara = None # 相机
+        self._camara_thread = None # 相机线程
+        self._keyboard = None # 键盘
+        self._gesture_window = None # 手势窗体
+        self._model_window = None # 模型窗体
         # 其他控件
         self._user_config_window = UserConfigWindow(self)
         self._system_config_window = SystemConfigWindow(properties, self)
         self._tabs = QTabWidget(self)
-        self._btn_launch = QPushButton(self)
-        self._btn_launch.clicked.connect(self.launch)
+        self._btn_launch_mousemove = QPushButton(self)
+        self._btn_launch_shortcut = QPushButton(self)
+        self._btn_stop_launch = QPushButton(self)
+        
         self.initUI()
         # 引入样式
         with open('PySide/resources/qss/MainWindow.qss', 'r') as f:
@@ -102,26 +95,74 @@ class MainWindow(QMainWindow):
         self._tabs.setGeometry(QRect(10, 10, 750, 550))
         self._tabs.changeEvent = self.on_tabs_change
         # 启动按钮样式
-        self._btn_launch.show()
-        self._btn_launch.setText('启动')
-        self._btn_launch.setObjectName('btn_launch')
-        self._btn_launch.setGeometry(QRect(340, 600, 100, 50))
-        self._btn_launch.setCursor(QCursor(Qt.PointingHandCursor))
+        self._btn_launch_mousemove.show()
+        self._btn_launch_mousemove.setText('启动鼠标控制')
+        self._btn_launch_mousemove.setGeometry(QRect(160, 600, 200, 50))
+        self._btn_launch_mousemove.setObjectName('btn_launch')
+        self._btn_launch_mousemove.setCursor(QCursor(Qt.PointingHandCursor))
+        self._btn_launch_mousemove.clicked.connect(self.on_btn_launch_mousemove_clicked)
 
-    def launch(self):
-        self._is_launch = not self._is_launch
-        if self._is_launch:
-            if (self._camara is None):
-                self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+        self._btn_launch_shortcut.show()
+        self._btn_launch_shortcut.setText('启动快捷键控制')
+        self._btn_launch_shortcut.setGeometry(QRect(420, 600, 200, 50))
+        self._btn_launch_shortcut.setObjectName('btn_launch')
+        self._btn_launch_shortcut.setCursor(QCursor(Qt.PointingHandCursor))
+        self._btn_launch_shortcut.clicked.connect(self.on_btn_launch_shortcut_clicked)
+
+        self._btn_stop_launch.hide()
+        self._btn_stop_launch.setText('停止')
+        self._btn_stop_launch.setObjectName('btn_launch')
+        self._btn_stop_launch.setGeometry(QRect(340, 600, 100, 50))
+        self._btn_stop_launch.setCursor(QCursor(Qt.PointingHandCursor))
+        self._btn_stop_launch.clicked.connect(self.on_btn_stop_launch_clicked)
+
+    def init_camara_windows_and_thread(self):
+        if (self._camara is not None):
+            # 相机线程
             self._camara_thread = threading.Thread(target=camera.start, args=(self._camara,))
             self._camara_thread.start()
-            self._btn_launch.setText('停止')
-        else:
-            # 终止线程
-            stop_thread(self._camara_thread)
-            self._camara_thread = None
-            self._camara.mouse_status = 1
-            self._btn_launch.setText('启动')
+            # 手势窗体
+            self._gesture_window = GestureFloatingWindow(self._camara)
+            self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT+100)
+            self._gesture_window.show()
+            # 模型窗体
+            self._model_window = ModelFloatingWindow(self._camara)
+            self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
+            self._model_window.show()
+            # 按钮显示状态
+            self._btn_launch_mousemove.hide()
+            self._btn_launch_shortcut.hide()
+            self._btn_stop_launch.show()
+
+    def on_btn_launch_mousemove_clicked(self):
+        # 相机
+        self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+        # 相机线程和窗体
+        self.init_camara_windows_and_thread()
+        # 键盘
+        self._keyboard = MyKeyboard(self._camara)
+        self._keyboard.hide()
+
+    def on_btn_launch_shortcut_clicked(self):
+        # 相机
+        self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.MOUSE_CONTROL_MODE)
+        # 相机线程和窗体
+        self.init_camara_windows_and_thread()
+        
+    def on_btn_stop_launch_clicked(self):
+        # 终止线程
+        stop_thread(self._camara_thread)
+        self._camara_thread = None
+        self._camara = None
+        self._keyboard = None
+        self._gesture_window = None
+        self._model_window = None
+        # 按钮显示状态
+        self._btn_launch_mousemove.show()
+        self._btn_launch_shortcut.show()
+        self._btn_stop_launch.hide()
+
+
 
     def on_tabs_change(self, event):
         pass
