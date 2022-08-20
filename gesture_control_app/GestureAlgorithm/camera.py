@@ -11,9 +11,11 @@ import numpy as np
 from PySide2.QtWidgets import QApplication
 from cv2 import dnn
 
-from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard
+from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard, StringAction
 
 # 定义模式对应的常量
+from PySide.utils.PropertiesHandler import PropertyHandler
+
 MOUSE_CONTROL_MODE = 0
 SHORTCUTS_MODE = 1
 # 定义鼠标状态对应的变量
@@ -68,6 +70,7 @@ def get_bone_image(image, points):
 class Camera:
 
     def __init__(self, model_path, class_names, mode):
+        self.properties = PropertyHandler('settings.properties').get_properties()
         # 加载模型
         self.model = dnn.readNetFromTensorflow(model_path)
         # 设置类别名
@@ -87,12 +90,15 @@ class Camera:
         self.change_begin_time = 0
         # 需要保持该手势持续的时间,以改变状态
         self.keep_time = 1.5
-        self.mouse_moving = mouseMoving.MouseMoving()
+        # 动作对象
+        self.command_map = {}
+        self.mouse_moving = MouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
+        # 预测值
         self.predicted_value = None
         # 保存的图片
         self.origin_image = None
-
+        # 虚拟键盘
         self.virtual_keyboard = None
 
         self.keyboard_image = None
@@ -145,7 +151,6 @@ class Camera:
             self.change_begin_time = time.time()
 
         else:
-
             # 如果当前的模式与前一个相同,且时间超过设定的时间，则认为是要改变操作的模式
             if time.time() - self.change_begin_time > self.keep_time:
                 # 如果当前的是5的话,在鼠标移动与屏幕滚动之间切换
@@ -173,7 +178,6 @@ class Camera:
                 action = self.scroll_screen
                 action.action(points)
             elif self.mouse_status == VIRTUAL_KEYBOARD:
-
                 if self.virtual_keyboard is None:
                     self.virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
 
@@ -186,7 +190,9 @@ class Camera:
 
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
-            pass
+            if self.predicted_value is not None:
+                string_action = StringAction.StringAction(self.predicted_value, self.properties)
+                string_action.action()
 
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
