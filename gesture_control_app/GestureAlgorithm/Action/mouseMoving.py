@@ -7,6 +7,7 @@ import time
 import pyautogui as pag
 import logging
 from GestureAlgorithm.Action.BaseAction import BaseAction
+from PySide.utils.PropertiesHandler import PropertyHandler
 
 pag.FAILSAFE = False
 
@@ -22,13 +23,22 @@ class MouseMoving(BaseAction):
         self._last_y = 0
         self._last_click_time = 0
         self._CLICK_DURATION = 0.8
+        self.properties = PropertyHandler('settings.properties').get_properties()
+        self.mouse_sensitivity = self.properties['mouse_sensitivity']
+
 
     # 检测是否有点击的操作
     def try_click(self, points):
-        if time.time() - self._last_click_time > self._CLICK_DURATION:
+        if self._can_action:
             if abs(points[8][0] - points[12][0]) * 2560 < 80 and abs(points[8][1] - points[12][1]) * 1600 < 80:
                 pag.click()
                 self._last_click_time = time.time()
+                self._can_action = False
+        else:
+            if time.time() - self._last_click_time > self._CLICK_DURATION:
+                self._can_action = True
+                self._last_click_time = 0
+                self._stop_time = 0
 
     # points是手部坐标点的数组
     def action(self, points):
