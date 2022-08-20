@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._message_box = None
         self._loading = None
+        self._status = 0
         self.setWindowTitle('手势识别')
         properties = PropertyHandler('settings.properties').get_properties()
         if properties is None:
@@ -62,6 +63,8 @@ class MainWindow(QMainWindow):
         # 引入样式
         with open('PySide/resources/qss/MainWindow.qss', 'r') as f:
             self.setStyleSheet(f.read())
+
+        self.startTimer(10)
 
     def center(self):
         size = self.geometry()
@@ -120,21 +123,14 @@ class MainWindow(QMainWindow):
             self._btn_stop_launch.show()
     
     def handle_btn_launch_mousemove_click(self):
-        # 相机
         self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
-        # 相机线程和窗体
-        self.init_camara_windows_and_thread()
-        # 键盘
-        self._keyboard = MyKeyboard(self._camara)
-        self._keyboard.hide()
         self._loading.stop()
+        self._status = 1
     
     def handle_btn_launch_shortcut_click(self):
-        # 相机
         self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
-        # 相机线程和窗体
-        self.init_camara_windows_and_thread()
         self._loading.stop()
+        self._status = 2
 
     def on_btn_launch_mousemove_clicked(self):
         self._loading = MyLoading(self)
@@ -172,7 +168,20 @@ class MainWindow(QMainWindow):
             stop_thread(self._camara_thread)
         # 关闭窗体
         event.accept()
-
+    
+    def timerEvent(self, event: QTimerEvent) -> None:
+        if (self._status == 0):
+            return
+        if (self._status == 1): # 点击启动鼠标移动按钮
+            self.init_camara_windows_and_thread()
+            # 键盘
+            self._keyboard = MyKeyboard(self._camara)
+            self._keyboard.hide()
+        if (self._status == 2):
+            self.init_camara_windows_and_thread()
+        self._status = 0
+            
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     SCREEN_WIDTH = app.primaryScreen().size().width()
