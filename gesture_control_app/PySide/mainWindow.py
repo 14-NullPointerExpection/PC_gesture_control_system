@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
 
     def on_btn_launch_shortcut_clicked(self):
         # 相机
-        self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.MOUSE_CONTROL_MODE)
+        self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
         # 相机线程和窗体
         self.init_camara_windows_and_thread()
         
