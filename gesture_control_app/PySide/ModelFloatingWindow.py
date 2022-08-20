@@ -2,16 +2,17 @@
 author: XP
 desc: 展示当前模式的悬浮窗
 """
+import _thread
 import sys
-from PySide2 import QtCore, QtWidgets
+
+import pyautogui as pag
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
+
 from FloatingWindow import FloatingWindow
-from GestureAlgorithm.camera import Camera
 from GestureAlgorithm import camera
-import pyautogui as pag
-import _thread
+from GestureAlgorithm.camera import Camera
 
 
 class ModelFloatingWindow(FloatingWindow):

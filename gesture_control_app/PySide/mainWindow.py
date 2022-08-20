@@ -1,26 +1,27 @@
-'''
+"""
     @description: This is the main window of the application.
     @Date: 2022-08-15
-'''
-from PySide2.QtWidgets import *
+"""
+import os
+import sys
+import threading
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import sys
-import os
-from components.UserConfigWindow import UserConfigWindow
-from components.SystemConfigWindow import SystemConfigWindow
-from utils.PropertiesHandler import PropertyHandler
-from utils.MyMessageBox import MyMessageBox
-from GestureFloatingWindow import GestureFloatingWindow
-from ModelFloatingWindow import ModelFloatingWindow
+from PySide2.QtWidgets import *
+
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
-import threading
+from GestureFloatingWindow import GestureFloatingWindow
+from ModelFloatingWindow import ModelFloatingWindow
 from PySide.MyKeyboard import MyKeyboard
+from components.SystemConfigWindow import SystemConfigWindow
+from components.UserConfigWindow import UserConfigWindow
+from utils.MyMessageBox import MyMessageBox
+from utils.PropertiesHandler import PropertyHandler
 
 # 设置PySide文件夹为当前工作目录
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-
 
 # 设置窗口的大小
 FLOATING_WINDOW_WIDTH = 300
@@ -32,6 +33,8 @@ SCREEN_HEIGHT = 800
 
 import inspect
 import ctypes
+
+
 def _async_raise(tid, exctype):
     tid = ctypes.c_long(tid)
     if not inspect.isclass(exctype):
@@ -44,8 +47,11 @@ def _async_raise(tid, exctype):
         # and you should call it again with exc=NULL to revert the effect"""
         ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
 def stop_thread(thread):
     _async_raise(thread.ident, SystemExit)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -57,7 +63,6 @@ class MainWindow(QMainWindow):
             self._message_box = MyMessageBox('配置文件打开失败', 'error')
             self.close()
 
-
         # 变量
         self._is_launch = False
         # 相机
@@ -68,11 +73,13 @@ class MainWindow(QMainWindow):
         self._keyboard.hide()
         # 手势窗体
         self._gesture_window = GestureFloatingWindow(self._camara)
-        self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT+100)
+        self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400,
+                                         FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT + 100)
         self._gesture_window.show()
         # 模型窗体
         self._model_window = ModelFloatingWindow(self._camara)
-        self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
+        self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100,
+                                       FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
         self._model_window.show()
         # 其他控件
         self._user_config_window = UserConfigWindow(self)
@@ -87,7 +94,7 @@ class MainWindow(QMainWindow):
 
     def center(self):
         size = self.geometry()
-        self.move((SCREEN_WIDTH-size.width())//2, (SCREEN_HEIGHT-size.height())//2)
+        self.move((SCREEN_WIDTH - size.width()) // 2, (SCREEN_HEIGHT - size.height()) // 2)
 
     def initUI(self):
         # 窗体样式
@@ -96,7 +103,7 @@ class MainWindow(QMainWindow):
         self.center()
         # tabs样式
         self._tabs.show()
-        self._tabs.setTabPosition(QTabWidget.North) # tab在顶部横向排列
+        self._tabs.setTabPosition(QTabWidget.North)  # tab在顶部横向排列
         self._tabs.addTab(self._user_config_window, '用户自定义')
         self._tabs.addTab(self._system_config_window, '系统配置')
         self._tabs.setGeometry(QRect(10, 10, 750, 550))
@@ -125,7 +132,6 @@ class MainWindow(QMainWindow):
 
     def on_tabs_change(self, event):
         pass
-
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # 绘制背景图片

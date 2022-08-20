@@ -4,8 +4,9 @@ Description:鼠标的移动类
 """
 import _thread
 import time
+
 import pyautogui as pag
-import logging
+
 from GestureAlgorithm.Action.BaseAction import BaseAction
 from PySide.utils.PropertiesHandler import PropertyHandler
 

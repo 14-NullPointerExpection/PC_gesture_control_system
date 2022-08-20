@@ -1,7 +1,8 @@
 import time
 
-from GestureAlgorithm.Action.BaseAction import BaseAction
 import pyautogui as pag
+
+from GestureAlgorithm.Action.BaseAction import BaseAction
 
 
 class RightAction(BaseAction):

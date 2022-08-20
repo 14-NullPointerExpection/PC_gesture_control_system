@@ -5,6 +5,7 @@ Description:对屏幕进行滚动操作
 import time
 
 import pyautogui as pag
+
 from GestureAlgorithm.Action.BaseAction import BaseAction
 from PySide.utils.PropertiesHandler import PropertyHandler
 

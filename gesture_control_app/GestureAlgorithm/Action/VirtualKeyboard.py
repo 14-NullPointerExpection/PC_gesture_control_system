@@ -2,7 +2,7 @@
 Author:匡俊骅
 
 """
-import _thread
+import cgitb
 import time
 from time import sleep
 
@@ -10,12 +10,13 @@ import cv2
 import cvzone
 import pyautogui
 
-from GestureAlgorithm.Action.BaseAction import BaseAction
 from GestureAlgorithm import camera
-from PySide.MyKeyboard import MyKeyboard
+from GestureAlgorithm.Action.BaseAction import BaseAction
 
-import cgitb
-cgitb.enable( format = 'text')
+cgitb.enable(format='text')
+
+
+# 虚拟键盘类，用以处理指定手势后弹出虚拟键盘的操作
 class VirtualKeyboard(BaseAction):
     class Button:
         def __init__(self, pos, text, size=[85, 85]):
@@ -25,20 +26,19 @@ class VirtualKeyboard(BaseAction):
 
     def __init__(self):
         super().__init__()
+        # 所有按键
         self.keys = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                      ["A", "S", "D", "F", "G", "H", "J", "K", "L", ";", 'DEL'],
                      ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", 'OK']]
+        # 最终输出的文本
         self.final_text = ""
         self.camera = None
+        # 判断是否可以摧毁
         self.can_destroy = False
-        # self.my_keyboard = MyKeyboard()
-        # self.my_keyboard.show()
-        # print('9999',self.my_keyboard)
 
+    # 绘制键盘
     def draw_all(self, image, button_list):
-        cv2.rectangle(image, (50, 350), (700, 450), (127, 172, 91), cv2.FILLED)
-        cv2.putText(image, self.final_text, (60, 430),
-                    cv2.FONT_HERSHEY_PLAIN, 5, (255, 255, 255), 5)
+        # 绘制全部按钮
         for button in button_list:
             x, y = button.pos
             w, h = button.size
@@ -54,12 +54,17 @@ class VirtualKeyboard(BaseAction):
             else:
                 cv2.putText(image, button.text, (x + 20, y + 65),
                             cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 4)
+        # 绘制下方输入框
+        cv2.rectangle(image, (50, 350), (700, 450), (127, 172, 91), cv2.FILLED)
+        cv2.putText(image, self.final_text, (60, 430),
+                    cv2.FONT_HERSHEY_PLAIN, 5, (255, 255, 255), 5)
         return image
 
     def action(self, image, points):
-
+        # 获取骨架图用以显示
         bone_image = camera.get_bone_image(image, points)
 
+        # 获取全部按钮并缩放
         button_list = []
         for i in range(len(self.keys)):
             for j, key in enumerate(self.keys[i]):
@@ -68,7 +73,7 @@ class VirtualKeyboard(BaseAction):
 
         if points:
             if self._can_action:
-                # points = list(map(lambda p: (int(p[0] * image[0]), int(p[1] * image[1])), points))
+                # 对于获取的点根据视频尺寸缩放
                 point = []
                 for i in range(0, len(points)):
                     point.append((int(points[i][0] * image.shape[1]), int(points[i][1] * image.shape[0])))
@@ -77,30 +82,25 @@ class VirtualKeyboard(BaseAction):
                     x, y = button.pos
                     w, h = button.size
                     # 手指虚点键盘
-
                     if x < point[8][0] < x + w and y < point[8][1] < y + h:
-
                         cv2.rectangle(keyboard_image, (x - 5, y - 5), (x + w + 5, y + h + 5), (0, 0, 175), cv2.FILLED)
                         cv2.putText(keyboard_image, button.text, (x + 20, y + 65),
                                     cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 4)
-                        # l, _, _ = detector.findDistance(8, 12, img, draw=False)
-                        l = (pow((point[8][0] - point[12][0]), 2) + pow((point[8][1] - point[12][1]), 2)) ** 0.5
-
+                        distance = (pow((point[8][0] - point[12][0]), 2) + pow((point[8][1] - point[12][1]), 2)) ** 0.5
                         # 尝试进行点击操作
-                        if l < 30:
-
+                        if distance < 30:
+                            # 点击后的按钮颜色变化
                             cv2.rectangle(keyboard_image, button.pos, (x + w, y + h), (0, 255, 0), cv2.FILLED)
                             cv2.putText(keyboard_image, button.text, (x + 20, y + 65),
                                         cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 4)
                             self._can_action = False
                             self._stop_time = time.time()
-
+                            # 对于特殊按钮的处理
                             if button.text == 'DEL':
                                 self.final_text = self.final_text[:-1]
                             elif button.text == 'OK':
                                 pyautogui.typewrite(self.final_text)
                                 self.final_text = ''
-                                # self.camera.mouse_status = MOUSE_MOVING
                                 self.can_destroy = True
                             else:
                                 self.final_text += button.text
@@ -109,20 +109,6 @@ class VirtualKeyboard(BaseAction):
                 if time.time() - self._stop_time > self._STOP_DURATION:
                     self._can_action = True
                     self._stop_time = 0
-        # cv2.imshow('123',keyboard_image)
-        #
-        # self.my_keyboard.keyboard_image = keyboard_image
-        # self.my_keyboard.can_destroy = self.can_destroy
-
-        # _thread.start_new_thread(self.my_keyboard.show, ())
-        # self.my_keyboard.show()
-
 
         cv2.waitKey(10)
-        return self.can_destroy,keyboard_image
-
-        # cv2.imshow("keyboard_image", keyboard_image)
-        # if self.can_destroy:
-        #     cv2.destroyWindow('keyboard_image')
-        #     self.can_destroy = False
-        # cv2.waitKey(1)
+        return self.can_destroy, keyboard_image

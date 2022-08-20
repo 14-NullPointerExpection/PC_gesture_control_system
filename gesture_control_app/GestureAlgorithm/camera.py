@@ -6,13 +6,12 @@ import sys
 import time
 
 import cv2 as cv
+import mediapipe as mp
 import numpy as np
 from PySide2.QtWidgets import QApplication
 from cv2 import dnn
-import mediapipe as mp
-import _thread
+
 from GestureAlgorithm.Action import mouseMoving, ScrollScreen, VirtualKeyboard
-from PySide.MyKeyboard import MyKeyboard
 
 # 定义模式对应的常量
 MOUSE_CONTROL_MODE = 0
@@ -67,13 +66,6 @@ def get_bone_image(image, points):
 
 
 class Camera:
-    # _instance_ = {}
-    #
-    # def __new__(cls, model_path, class_names, mode):
-    #     argu = (model_path, class_names, mode)
-    #     if argu not in cls._instance_:
-    #         cls._instance_[argu] = super().__new__(cls)
-    #     return cls._instance_[argu]
 
     def __init__(self, model_path, class_names, mode):
         # 加载模型
@@ -104,8 +96,6 @@ class Camera:
         self.virtual_keyboard = None
 
         self.keyboard_image = None
-
-
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
     def get_frame_image(self):
@@ -165,13 +155,11 @@ class Camera:
                     elif self.mouse_status == SCROLL_SCREEN:
                         self.mouse_status = MOUSE_MOVING
 
-
                 # 如果当前的是2的话,是切换到键盘
                 elif class_id == '2':
                     self.mouse_status = VIRTUAL_KEYBOARD
 
                 self.change_begin_time = time.time()
-
 
     # 根据当前的操作模式，执行某些操作
     def execute_action(self, points):
@@ -195,8 +183,6 @@ class Camera:
                 if can_change:
                     self.mouse_status = MOUSE_MOVING
                     self.virtual_keyboard = None
-
-
 
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:

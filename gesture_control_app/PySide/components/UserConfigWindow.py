@@ -2,10 +2,11 @@
     @description: 用户自定义页面
     @Date: 2022-08-15
 '''
-from PySide2.QtWidgets import *
+import sys
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import sys
+from PySide2.QtWidgets import *
 
 GESTURE_NUM = 3
 SCROLL_BAR_WIDTH = 23

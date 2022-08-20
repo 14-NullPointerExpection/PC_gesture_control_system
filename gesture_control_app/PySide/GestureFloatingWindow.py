@@ -2,19 +2,16 @@
 author: XP
 desc: 展示手掌骨架图及手势预测值的悬浮窗
 """
+import sys
 import time
 
-from PySide2 import QtWidgets
-from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import PySide2.QtCore as QtCore
-import sys
+from PySide2.QtWidgets import *
+
 from FloatingWindow import FloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
-import _thread
-
 from PySide.MyKeyboard import MyKeyboard
 
 # 设置窗口的大小
@@ -23,10 +20,9 @@ WINDOW_HEIGHT = 400
 
 
 class CameraThread(QThread):
-    def __init__(self, cam,):
+    def __init__(self, cam, ):
         super().__init__()
         self.cam = cam
-
 
     def run(self):
         camera.start(self.cam)
@@ -38,10 +34,7 @@ class CameraThread(QThread):
         self.wait()
 
 
-
-
-
-
+# 手势悬浮窗类，用以显示手势悬浮窗
 class GestureFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
@@ -59,11 +52,8 @@ class GestureFloatingWindow(FloatingWindow):
             painter.drawText(30, 125, '识别不到手')
             return
 
-        # painter.scale(0.75, 0.75)
-
         # 骨架
         painter.setPen(QPen(QColor(128, 128, 128), 4, Qt.SolidLine))
-        print('huahua')
 
         painter.drawLine(self._points[0][0] * WINDOW_WIDTH, self._points[0][1] * WINDOW_WIDTH,
                          self._points[5][0] * WINDOW_WIDTH,
@@ -135,7 +125,6 @@ if __name__ == '__main__':
     SCREEN_HEIGHT = app.primaryScreen().geometry().height()
 
     c = Camera('../125.pb', class_names=('1', '2', '5'), mode=camera.MOUSE_CONTROL_MODE)
-    # _thread.start_new_thread(camera.start, (c,))
     camera_thread = CameraThread(c)
     camera_thread.start()
     time.sleep(1)
