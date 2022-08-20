@@ -11,6 +11,8 @@ from components.UserConfigWindow import UserConfigWindow
 from components.SystemConfigWindow import SystemConfigWindow
 from utils.PropertiesHandler import PropertyHandler
 from utils.MyMessageBox import MyMessageBox
+from utils.MyLoading import MyLoading
+from utils.ThreadUtils import stop_thread
 from GestureFloatingWindow import GestureFloatingWindow
 from ModelFloatingWindow import ModelFloatingWindow
 from GestureAlgorithm import camera
@@ -30,29 +32,12 @@ FLOATING_WINDOW_HEIGHT = 300
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
 
-import inspect
-import ctypes
-
-# 以抛出异常的方式终止线程
-def _async_raise(tid, exctype):
-    tid = ctypes.c_long(tid)
-    if not inspect.isclass(exctype):
-        exctype = type(exctype)
-    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
-    if res == 0:
-        raise ValueError("invalid thread id")
-    elif res != 1:
-        # """if it returns a number greater than one, you're in trouble,
-        # and you should call it again with exc=NULL to revert the effect"""
-        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
-        raise SystemError("PyThreadState_SetAsyncExc failed")
-def stop_thread(thread):
-    _async_raise(thread.ident, SystemExit)
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self._message_box = None
+        self._loading = None
         self.setWindowTitle('手势识别')
         properties = PropertyHandler('settings.properties').get_properties()
         if properties is None:
@@ -133,8 +118,8 @@ class MainWindow(QMainWindow):
             self._btn_launch_mousemove.hide()
             self._btn_launch_shortcut.hide()
             self._btn_stop_launch.show()
-
-    def on_btn_launch_mousemove_clicked(self):
+    
+    def handle_btn_launch_mousemove_click(self):
         # 相机
         self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
         # 相机线程和窗体
@@ -142,12 +127,22 @@ class MainWindow(QMainWindow):
         # 键盘
         self._keyboard = MyKeyboard(self._camara)
         self._keyboard.hide()
-
-    def on_btn_launch_shortcut_clicked(self):
+        self._loading.stop()
+    
+    def handle_btn_launch_shortcut_click(self):
         # 相机
         self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
         # 相机线程和窗体
         self.init_camara_windows_and_thread()
+        self._loading.stop()
+
+    def on_btn_launch_mousemove_clicked(self):
+        self._loading = MyLoading(self)
+        threading.Thread(target=self.handle_btn_launch_mousemove_click).start()
+
+    def on_btn_launch_shortcut_clicked(self):
+        self._loading = MyLoading(self)
+        threading.Thread(target=self.handle_btn_launch_shortcut_click).start()
         
     def on_btn_stop_launch_clicked(self):
         # 终止线程
@@ -163,10 +158,8 @@ class MainWindow(QMainWindow):
         self._btn_stop_launch.hide()
 
 
-
     def on_tabs_change(self, event):
         pass
-
 
     def paintEvent(self, event: QPaintEvent) -> None:
         # 绘制背景图片
