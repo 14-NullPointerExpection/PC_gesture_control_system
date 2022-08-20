@@ -2,12 +2,9 @@
 author: XP
 desc: 悬浮窗的基类, 用于实现悬浮窗的基本功能
 """
-from PySide2 import QtWidgets
-from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import PySide2.QtCore as QtCore
-import sys
+from PySide2.QtWidgets import *
 
 
 class FloatingWindow(QWidget):
@@ -84,7 +81,7 @@ class FloatingWindow(QWidget):
 
     # 滑动效果
     def startAnimation(self, x, y, mode='show', direction=None):
-        animation = QPropertyAnimation(self, b"geometry", self)
+        animation = QPropertyAnimation(self, b'geometry', self)
         # 滑出动画时长
         animation.setDuration(200)
         # 隐藏时，只留10在外边，防止跨屏

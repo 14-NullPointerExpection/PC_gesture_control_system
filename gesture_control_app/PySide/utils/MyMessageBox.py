@@ -3,9 +3,9 @@
     @Date: 2020-08-17
 '''
 
-from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
+from PySide2.QtWidgets import *
 
 WIDTH = 300
 HEIGHT = 50

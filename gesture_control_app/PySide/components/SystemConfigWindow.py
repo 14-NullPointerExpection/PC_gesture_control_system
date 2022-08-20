@@ -2,12 +2,14 @@
     @description: 系统配置窗口
     @Date: 2022-08-16
 '''
-from PySide2.QtWidgets import *
+import sys
+
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import sys
-from utils.PropertiesHandler import PropertyHandler
+from PySide2.QtWidgets import *
 from utils.MyMessageBox import MyMessageBox
+from utils.PropertiesHandler import PropertyHandler
+
 
 class SystemConfigWindow(QWidget):
     def __init__(self, configs, parent=None):
