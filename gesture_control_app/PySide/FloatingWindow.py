@@ -24,8 +24,8 @@ class FloatingWindow(QWidget):
         dsk = QApplication.primaryScreen()
         self._screen_width = dsk.geometry().width()
         self._screen_height = dsk.geometry().height()
-        self.WINDOW_WIDTH = 200
-        self.WINDOW_HEIGHT = 250
+        self.WINDOW_WIDTH = 300
+        self.WINDOW_HEIGHT = 300
         # 设置悬浮窗刷新间隔
         self.startTimer(100)
 

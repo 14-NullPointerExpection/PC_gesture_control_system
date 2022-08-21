@@ -14,13 +14,14 @@ from PySide.FloatingWindow import FloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 
-
+WINDOW_WIDTH = 300
+WINDOW_HEIGHT = 300
 class ModelFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
         # super(ModelFloatingWindow, self).__init__(parent)
-        self.WINDOW_WIDTH = 300
-        self.WINDOW_HEIGHT = 300
+        self.WINDOW_WIDTH = WINDOW_WIDTH
+        self.WINDOW_HEIGHT = WINDOW_HEIGHT
         self.camera = camera
         self.startTimer(10)
 
