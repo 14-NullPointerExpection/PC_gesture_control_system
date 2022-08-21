@@ -7,7 +7,8 @@ from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
+from utils.MyMessageBox import MyMessageBox
+from utils.PropertiesHandler import PropertyHandler
 GESTURE_NUM = 4
 SCROLL_BAR_WIDTH = 23
 
@@ -23,8 +24,9 @@ class CustomLineEdit(QtWidgets.QLineEdit):
 
 
 class UserConfigWindow(QLabel):
-    def __init__(self, parent=None):
+    def __init__(self, configs, parent=None):
         super().__init__(parent)
+        self._configs = configs
         self._display = []
         self._select = []  # 下拉框
         self._label_select = []  # 标签
@@ -34,8 +36,12 @@ class UserConfigWindow(QLabel):
         self._button_save = QPushButton(self)
         self._is_key_event_enable = False
         self._input_area_index = -1
-        self._image_path = ['PySide/resources/images/0.jpg', 'PySide/resources/images/5.jpg',
-                            'PySide/resources/images/l.jpg', 'PySide/resources/images/r.jpg']
+        self._init_action_key = ['left_action_key', 'right_action_key',
+                                 'up_action_key', 'zero_action_key']
+        self._init_action_url = ['left_action_url','right_action_url',
+                                 'up_action_url','zero_action_url']
+        self._image_path = ['PySide/resources/images/l.jpg', 'PySide/resources/images/r.jpg',
+                            'PySide/resources/images/5.jpg', 'PySide/resources/images/0.jpg']
         self.initUI()
 
         # 引入qss文件
@@ -58,7 +64,8 @@ class UserConfigWindow(QLabel):
         self._scroll_area.show()
         self._scroll_area.setWidget(self._display_area)
         self._scroll_area.setGeometry(0, 0, self.width(), self.height() - 100)
-
+        # 隐藏横向滚动条
+        self._scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for i in range(GESTURE_NUM):
             # 显示框样式
 
@@ -80,8 +87,10 @@ class UserConfigWindow(QLabel):
             # 文本框
             self._input_area.append(CustomLineEdit(self._display_area))
             self._input_area[i].setGeometry(QRect(420, 120 + i * display_interval, 200, 30))
+            self._input_area[i].setText(self._configs[self._init_action_key[i]])
             self._input_area[i].show()
             self._input_area[i].setReadOnly(True)
+            # self._input_area[i].textChanged.connect(self.input_area_text_changed)
             # 文本框绑定点击事件
             self._input_area[i].clicked.connect(self.input_area_clicked)
             # 标签样式
@@ -96,21 +105,22 @@ class UserConfigWindow(QLabel):
         self._button_save.setGeometry(QRect(self.width() / 2 - 50, self.height() - 80, 100, 40))
         self._button_save.setCursor(Qt.PointingHandCursor)
         self._button_save.setText('保存')
+        self._button_save.clicked.connect(self.save_configs)
 
     def select_changed(self):
         # 获取当前选择的下拉框的索引
         index = self._select.index(self.sender())
-        self._input_area[index].setText('')
         # 如果选择的是打开网页，则显示文本框
         if self._select[index].currentIndex() == 1:
-
             print('------------打开网页')
+            self._input_area[index].setText(self._configs[self._init_action_url[index]])
             # 放开键盘
             self.releaseKeyboard()
             # 文本框可以编辑
             self._input_area[index].setReadOnly(False)
             # 解除绑定的键盘事件
             self._input_area[index].removeEventFilter(self)
+            self._input_area[index].clicked.disconnect(self.input_area_clicked)
 
         else:
             print('------------快捷按键')
@@ -118,6 +128,7 @@ class UserConfigWindow(QLabel):
             self._input_area[index].setReadOnly(True)
             # 文本框绑定点击事件
             self._input_area[index].clicked.connect(self.input_area_clicked)
+            self._input_area[index].setText(self._configs[self._init_action_key[index]])
 
     def input_area_clicked(self):
         self._is_key_event_enable = True
@@ -148,9 +159,21 @@ class UserConfigWindow(QLabel):
         # 0到9
         if (event.key() >= Qt.Key_0 and event.key() <= Qt.Key_9):
             self._input_area[self._input_area_index].setText(chr(event.key()))
-
         self._input_area_index = -1
 
+    def save_configs(self):
+        for i in range(GESTURE_NUM):
+            if self._select[i].currentIndex() == 1:
+                self._configs[self._init_action_url[i]] = self._input_area[i].text()
+                # self._init_action_url[i] = self._input_area[i].text()
+            else:
+                self._configs[self._init_action_key[i]] = self._input_area[i].text()
+                # self._init_action_key[i] = self._input_area[i].text()
+
+        if PropertyHandler('settings.properties').save_properties(properties=self._configs) is None:
+            self._message_box = MyMessageBox('配置文件已在其他文件中打开, 保存失败', 'error', self)
+        else:
+            self._message_box = MyMessageBox('保存成功', 'success', self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
