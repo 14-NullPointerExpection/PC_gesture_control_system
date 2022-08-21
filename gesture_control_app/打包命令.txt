@@ -1,4 +1,0 @@
-# 先生成spec配置文件
-    pyi-makespec -w MainWindow.py
-# 然后进入gesture_control_app目录进行打包
-    pyinstaller MainWindow.spec
