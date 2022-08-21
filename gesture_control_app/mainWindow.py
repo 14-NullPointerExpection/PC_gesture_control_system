@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         self._gesture_window = None # 手势窗体
         self._model_window = None # 模型窗体
         # 其他控件
-        self._user_config_window = UserConfigWindow(self)
+        self._user_config_window = UserConfigWindow(properties, self)
         self._system_config_window = SystemConfigWindow(properties, self)
         self._tabs = QTabWidget(self)
         self._btn_launch_mousemove = QPushButton(self)
