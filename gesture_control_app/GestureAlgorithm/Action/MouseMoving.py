@@ -25,7 +25,7 @@ class MouseMoving(BaseAction):
         self._last_click_time = 0
         self._CLICK_DURATION = 0.8
         self.properties = PropertyHandler('settings.properties').get_properties()
-        self.mouse_sensitivity = self.properties['mouse_sensitivity'] / 45
+        self.mouse_sensitivity = self.properties['mouse_sensitivity'] / 50
 
     # 检测是否有点击的操作
     def try_click(self, points):

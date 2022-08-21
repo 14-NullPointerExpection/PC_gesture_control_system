@@ -39,6 +39,8 @@ class GestureFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
         self.camera = camera
+        self.WINDOW_WIDTH = WINDOW_WIDTH
+        self.WINDOW_HEIGHT = WINDOW_HEIGHT
 
         self._points = self.camera.points.copy()
         if len(self._points):
