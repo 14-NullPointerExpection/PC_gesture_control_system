@@ -89,7 +89,7 @@ class Camera:
         # 记录开始改变状态的时间
         self.change_begin_time = 0
         # 需要保持该手势持续的时间,以改变状态
-        self.keep_time = 1.5
+        self.keep_time = self.properties['gesture_recognition_speed'] / 50
         # 动作对象
         self.command_map = {}
         self.mouse_moving = MouseMoving.MouseMoving()
