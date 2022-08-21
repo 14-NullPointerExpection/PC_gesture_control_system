@@ -78,6 +78,9 @@ class MouseMoving(BaseAction):
         if abs(x_m) > 370 or abs(y_m) > 270:
             x_m = int(x_m * 4)
             y_m = int(y_m * 3.5)
+
+            x_m = self.mouse_sensitivity*x_m
+            y_m = self.mouse_sensitivity*y_m
             self._stop_time = time.time()
             self._can_action = False
             pag.moveRel(x_m, y_m, duration=0.25)
@@ -85,19 +88,23 @@ class MouseMoving(BaseAction):
             # 中速移动
             x_m = int(x_m * 3.4)
             y_m = int(y_m * 2.6)
+            x_m = self.mouse_sensitivity * x_m
+            y_m = self.mouse_sensitivity * y_m
             pag.moveRel(x_m, y_m, duration=0.1)
         elif abs(x_m) < 150 and abs(y_m) < 120:
             # 慢速移动
             x_m = int(x_m * 0.7)
             y_m = int(y_m * 0.5)
+            x_m = self.mouse_sensitivity * x_m
+            y_m = self.mouse_sensitivity * y_m
             pag.moveRel(x_m, y_m, duration=0.1)
         else:
             x_m = int(x_m * 2.5)
             y_m = int(y_m * 2.0)
+            x_m = self.mouse_sensitivity * x_m
+            y_m = self.mouse_sensitivity * y_m
             pag.moveRel(x_m, y_m, duration=0.1)
-        # 鼠标灵敏度的修改
-        # x_m = self.mouse_sensitivity*x_m
-        # y_m = self.mouse_sensitivity*y_m
+
 
 
 
