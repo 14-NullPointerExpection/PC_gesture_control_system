@@ -7,8 +7,8 @@ from PySide2 import QtWidgets, QtCore
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-from utils.MyMessageBox import MyMessageBox
-from utils.PropertiesHandler import PropertyHandler
+from PySide.utils.MyMessageBox import MyMessageBox
+from PySide.utils.PropertiesHandler import PropertyHandler
 GESTURE_NUM = 4
 SCROLL_BAR_WIDTH = 23
 
