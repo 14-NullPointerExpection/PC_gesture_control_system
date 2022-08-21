@@ -9,7 +9,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
-from FloatingWindow import FloatingWindow
+from PySide.FloatingWindow import FloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 from PySide.MyKeyboard import MyKeyboard

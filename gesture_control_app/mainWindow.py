@@ -7,21 +7,21 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
-from components.UserConfigWindow import UserConfigWindow
-from components.SystemConfigWindow import SystemConfigWindow
-from utils.PropertiesHandler import PropertyHandler
-from utils.MyMessageBox import MyMessageBox
-from utils.MyLoading import MyLoading
-from utils.ThreadUtils import stop_thread
-from GestureFloatingWindow import GestureFloatingWindow
-from ModelFloatingWindow import ModelFloatingWindow
+from PySide.components.UserConfigWindow import UserConfigWindow
+from PySide.components.SystemConfigWindow import SystemConfigWindow
+from PySide.utils.PropertiesHandler import PropertyHandler
+from PySide.utils.MyMessageBox import MyMessageBox
+from PySide.utils.MyLoading import MyLoading
+from PySide.utils.ThreadUtils import stop_thread
+from PySide.GestureFloatingWindow import GestureFloatingWindow
+from PySide.ModelFloatingWindow import ModelFloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 import threading
 from PySide.MyKeyboard import MyKeyboard
 
 # 设置PySide文件夹为当前工作目录
-os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 # 设置窗口的大小
@@ -133,11 +133,11 @@ class MainWindow(QMainWindow):
         self._status = 2
 
     def on_btn_launch_mousemove_clicked(self):
-        self._loading = MyLoading(self)
+        self._loading = MyLoading('加载摄像模块中', self)
         threading.Thread(target=self.handle_btn_launch_mousemove_click).start()
 
     def on_btn_launch_shortcut_clicked(self):
-        self._loading = MyLoading(self)
+        self._loading = MyLoading('加载摄像模块中', self)
         threading.Thread(target=self.handle_btn_launch_shortcut_click).start()
         
     def on_btn_stop_launch_clicked(self):

@@ -13,8 +13,9 @@ LABEL_WIDTH = 150
 LABEL_HEIGHT = 150
 
 class MyLoading(QLabel):
-    def __init__(self, parent=None):
+    def __init__(self, text='加载中', parent=None):
         super().__init__(parent)
+        self._text = text
         self._animation = QMovie('PySide/resources/images/loading.gif')
         self._label_animation = QLabel(self)
         self.init_ui()
@@ -48,7 +49,7 @@ class MyLoading(QLabel):
         # 加载中文字
         painter.setPen(QPen(QColor(10, 10, 10)))
         painter.setFont(QFont('Microsoft YaHei', 15))
-        painter.drawText(QRect(self.width()//2 - 100, self.height()//2 + 70, 200, 40), Qt.AlignCenter, '加载中')
+        painter.drawText(QRect(self.width()//2 - 100, self.height()//2 + 70, 200, 40), Qt.AlignCenter, self._text)
 
 
     
