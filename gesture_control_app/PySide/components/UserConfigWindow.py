@@ -96,6 +96,7 @@ class UserConfigWindow(QLabel):
                 self._input_area[i].setText(self._configs[self._init_action_url[i]])
             else:
                 self._input_area[i].setText(self._configs[self._init_action_key[i]])
+                self.grabKeyboard()
                 self._input_area[i].setReadOnly(True)
             self._input_area[i].show()
             # 文本框绑定点击事件
