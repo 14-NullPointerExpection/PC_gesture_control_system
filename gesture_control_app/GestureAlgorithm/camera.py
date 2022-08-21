@@ -94,6 +94,7 @@ class Camera:
         self.command_map = {}
         self.mouse_moving = MouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
+        self.string_action = StringAction.StringAction(properties=self.properties)
         # 预测值
         self.predicted_value = None
         # 保存的图片
@@ -180,19 +181,16 @@ class Camera:
             elif self.mouse_status == VIRTUAL_KEYBOARD:
                 if self.virtual_keyboard is None:
                     self.virtual_keyboard = VirtualKeyboard.VirtualKeyboard()
-
                 can_change, keyboard = self.virtual_keyboard.action(self.origin_image, points)
                 self.keyboard_image = keyboard
-
                 if can_change:
                     self.mouse_status = MOUSE_MOVING
                     self.virtual_keyboard = None
-
         # 快捷指令模式
         elif self.mode == SHORTCUTS_MODE:
-            if self.predicted_value is not None:
-                string_action = StringAction.StringAction(self.predicted_value, self.properties)
-                string_action.action()
+            if self.points and self.predicted_value is not None:
+                self.string_action.set_command(self.predicted_value)
+                self.string_action.action()
 
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):

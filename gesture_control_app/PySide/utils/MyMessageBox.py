@@ -49,7 +49,7 @@ class MyMessageBox(QLabel):
         self.setFixedSize(WIDTH, HEIGHT)
         # 窗口位置
         if (self._parent is not None):
-            point_x = self._parent.width() // 2
+            point_x = self._parent.width() // 2 - WIDTH/2
             point_y = 0
             p = self._parent
             while (p is not None):
@@ -59,7 +59,7 @@ class MyMessageBox(QLabel):
         else:
             point_x = QApplication.desktop().width()//2 - WIDTH//2
             point_y = QApplication.desktop().height()//2 - HEIGHT//3*2
-        self.move(point_x - WIDTH/2, point_y)
+        self.move(point_x, point_y)
         # 字体
         font = QFont('Microsoft YaHei', 12)
         self.setFont(font)
