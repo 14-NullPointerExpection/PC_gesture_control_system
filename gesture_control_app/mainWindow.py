@@ -20,8 +20,10 @@ from GestureAlgorithm.camera import Camera
 import threading
 from PySide.MyKeyboard import MyKeyboard
 
-# 设置PySide文件夹为当前工作目录
+# 设置gesture_control_app文件夹为当前工作目录
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+print(os.path.dirname(os.path.abspath(__file__)))
 
 
 # 设置窗口的大小
@@ -123,12 +125,12 @@ class MainWindow(QMainWindow):
             self._btn_stop_launch.show()
     
     def handle_btn_launch_mousemove_click(self):
-        self._camara = Camera('125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+        self._camara = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
         self._loading.stop()
         self._status = 1
     
     def handle_btn_launch_shortcut_click(self):
-        self._camara = Camera('0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
+        self._camara = Camera('models/0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
         self._loading.stop()
         self._status = 2
 
