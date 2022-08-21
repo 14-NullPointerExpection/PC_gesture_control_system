@@ -8,9 +8,9 @@ from PySide.utils.KeyboardMap import KeyboardMap
 
 default_properties = {
     # 系统配置
-    'mouse_sensitivity': 5,  # 鼠标灵敏度
-    'scroll_speed': 5,  # 页面滚动速度
-    'gesture_recognition_speed': 5,  # 手势识别速度
+    'mouse_sensitivity': 50,  # 鼠标灵敏度
+    'scroll_speed': 50,  # 页面滚动速度
+    'gesture_recognition_speed': 50,  # 手势识别速度
     # 快捷手势
     # 动作类型(按键/打开网址)
     'left_action': 'press_key',
