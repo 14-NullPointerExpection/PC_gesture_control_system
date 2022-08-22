@@ -49,7 +49,7 @@ class MyLoading(QLabel):
         # 加载中文字
         painter.setPen(QPen(QColor(10, 10, 10)))
         painter.setFont(QFont('Microsoft YaHei', 15))
-        painter.drawText(QRect(self.width()//2 - 100, self.height()//2 + 70, 200, 40), Qt.AlignCenter, self._text)
+        painter.drawText(QRect(self.width()//2 - 150, self.height()//2 + 70, 300, 40), Qt.AlignCenter, self._text)
 
 
     

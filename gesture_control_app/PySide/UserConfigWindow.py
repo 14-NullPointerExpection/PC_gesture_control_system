@@ -56,13 +56,13 @@ class UserConfigWindow(QLabel):
         # 窗体样式
         self.show()
         self.setObjectName('UserConfigWindow')
-        self.setGeometry(0, 0, 750, 500)
+        self.setGeometry(0, 0, 780, 500)
 
         # 展示区域
         display_interval = 180  # 每个展示框的间隔
         self._display_area.show()
         self._display_area.setObjectName('display_area')
-        self._display_area.setGeometry(0, 0, self.width() - 23, GESTURE_NUM * display_interval + 60)
+        self._display_area.setGeometry(0, 0, self.width() - SCROLL_BAR_WIDTH, GESTURE_NUM * display_interval + 60)
 
         # 滚动条
         self._scroll_area.show()

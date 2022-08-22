@@ -9,7 +9,7 @@ KeyboardMap = {
         'ENTER': 16777220, # 13
         'TAB': 16777217, # 9
         'CAPSLOCK': 16777252, # 20
-        'SHIFT': 16777248, # 16
+        'LEFTSHIFT': 16777248, # 16
         'CTRL': 16777249, # 17
         'ALT': 16777251, # 18
         'BACKSPACE': 16777219, # 8
@@ -94,7 +94,7 @@ KeyboardMap = {
         16777220: 'ENTER',
         16777217: 'TAB',
         16777252: 'CAPSLOCK',
-        16777248: 'SHIFT',
+        16777248: 'LEFTSHIFT',
         16777249: 'CTRL',
         16777251: 'ALT',
         16777219: 'BACKSPACE',

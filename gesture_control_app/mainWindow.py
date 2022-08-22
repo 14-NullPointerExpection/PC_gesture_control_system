@@ -9,6 +9,7 @@ import sys
 import os
 from PySide.UserConfigWindow import UserConfigWindow
 from PySide.SystemConfigWindow import SystemConfigWindow
+from PySide.HelpWindow import HelpWindow
 from PySide.utils.PropertiesHandler import PropertyHandler
 from PySide.utils.MyMessageBox import MyMessageBox
 from PySide.utils.MyLoading import MyLoading
@@ -56,6 +57,7 @@ class MainWindow(QMainWindow):
         # 其他控件
         self._user_config_window = UserConfigWindow(properties, self)
         self._system_config_window = SystemConfigWindow(properties, self)
+        self._help_window = HelpWindow(self)
         self._tabs = QTabWidget(self)
         self._btn_launch_mousemove = QPushButton(self)
         self._btn_launch_shortcut = QPushButton(self)
@@ -82,8 +84,10 @@ class MainWindow(QMainWindow):
         self._tabs.setTabPosition(QTabWidget.North) # tab在顶部横向排列
         self._tabs.addTab(self._user_config_window, '用户自定义')
         self._tabs.addTab(self._system_config_window, '系统配置')
-        self._tabs.setGeometry(QRect(10, 10, 750, 550))
+        self._tabs.addTab(self._help_window, '帮助')
+        self._tabs.setGeometry(QRect(10, 10, 780, 550))
         self._tabs.changeEvent = self.on_tabs_change
+        self._tabs.tabBar().setCursor(Qt.PointingHandCursor)
         # 启动按钮样式
         self._btn_launch_mousemove.show()
         self._btn_launch_mousemove.setText('启动鼠标控制')

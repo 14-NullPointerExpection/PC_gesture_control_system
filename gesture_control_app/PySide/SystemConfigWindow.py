@@ -34,12 +34,12 @@ class SystemConfigWindow(QWidget):
     def initUI(self):
         # 窗体样式
         self.show()
-        self.setGeometry(0, 0, 750, 500)
+        self.setGeometry(0, 0, 780, 500)
         self.setObjectName('SystemConfigWindow')
         # 展示区域
         self._display_area.show()
         self._display_area.setObjectName('display_area')
-        self._display_area.setGeometry(QRect(0, 0, 750, 500))
+        self._display_area.setGeometry(QRect(0, 0, 780, 500))
 
         start_x = 100
         start_y = 100
