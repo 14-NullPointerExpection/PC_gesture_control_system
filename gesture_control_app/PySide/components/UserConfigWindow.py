@@ -9,6 +9,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide.utils.MyMessageBox import MyMessageBox
 from PySide.utils.PropertiesHandler import PropertyHandler
+from PySide.utils.KeyboardMap import KeyboardMap
 
 GESTURE_NUM = 4
 SCROLL_BAR_WIDTH = 23
@@ -143,30 +144,13 @@ class UserConfigWindow(QLabel):
         self._input_area_index = self._input_area.index(self.sender())
 
     def keyPressEvent(self, event):
+        super().keyPressEvent(event)
         if not self._is_key_event_enable or self._input_area_index == -1:
             return
         # 获取当前文本框的索引
-        if event.key() == Qt.Key_Escape:
-            self._input_area[self._input_area_index].setText('ESC')
-        if event.key() == Qt.Key_Up:
-            self._input_area[self._input_area_index].setText('UP')
-        if event.key() == Qt.Key_Down:
-            self._input_area[self._input_area_index].setText('DOWN')
-        if event.key() == Qt.Key_Left:
-            self._input_area[self._input_area_index].setText('LEFT')
-        if event.key() == Qt.Key_Right:
-            self._input_area[self._input_area_index].setText('RIGHT')
-        if event.key == Qt.Key_Backspace:
-            self._input_area[self._input_area_index].setText('BACKSPACE')
-        # a到z
-        if (event.key() >= Qt.Key_A and event.key() <= Qt.Key_Z):
-            self._input_area[self._input_area_index].setText(chr(event.key()))
-        # a 到z的大写
-        if (event.key() >= Qt.Key_A and event.key() <= Qt.Key_Z and event.modifiers() == Qt.ShiftModifier):
-            self._input_area[self._input_area_index].setText(chr(event.key()).upper())
-        # 0到9
-        if (event.key() >= Qt.Key_0 and event.key() <= Qt.Key_9):
-            self._input_area[self._input_area_index].setText(chr(event.key()))
+        key = event.key()
+        if (key in KeyboardMap['qtkey_to_key'].keys()):
+            self._input_area[self._input_area_index].setText(KeyboardMap['qtkey_to_key'][key])
         self._input_area_index = -1
 
     def save_configs(self):

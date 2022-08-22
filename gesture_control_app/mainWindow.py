@@ -48,8 +48,8 @@ class MainWindow(QMainWindow):
             self.close()
 
         # 手势控件
-        self._camara = None # 相机
-        self._camara_thread = None # 相机线程
+        self._camera = None # 相机
+        self._camera_thread = None # 相机线程
         self._keyboard = None # 键盘
         self._gesture_window = None # 手势窗体
         self._model_window = None # 模型窗体
@@ -106,17 +106,17 @@ class MainWindow(QMainWindow):
         self._btn_stop_launch.setCursor(QCursor(Qt.PointingHandCursor))
         self._btn_stop_launch.clicked.connect(self.on_btn_stop_launch_clicked)
 
-    def init_camara_windows_and_thread(self):
-        if (self._camara is not None):
+    def init_camera_windows_and_thread(self):
+        if (self._camera is not None):
             # 相机线程
-            self._camara_thread = threading.Thread(target=camera.start, args=(self._camara,))
-            self._camara_thread.start()
+            self._camera_thread = threading.Thread(target=camera.start, args=(self._camera,))
+            self._camera_thread.start()
             # 手势窗体
-            self._gesture_window = GestureFloatingWindow(self._camara)
+            self._gesture_window = GestureFloatingWindow(self._camera)
             self._gesture_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 - 400, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT+100)
             self._gesture_window.show()
             # 模型窗体
-            self._model_window = ModelFloatingWindow(self._camara)
+            self._model_window = ModelFloatingWindow(self._camera)
             self._model_window.setGeometry(SCREEN_WIDTH - FLOATING_WINDOW_WIDTH - 10, SCREEN_HEIGHT // 2 + 100, FLOATING_WINDOW_WIDTH, FLOATING_WINDOW_HEIGHT)
             self._model_window.show()
             # 按钮显示状态
@@ -125,12 +125,12 @@ class MainWindow(QMainWindow):
             self._btn_stop_launch.show()
     
     def handle_btn_launch_mousemove_click(self):
-        self._camara = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
+        self._camera = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
         self._loading.stop()
         self._status = 1
     
     def handle_btn_launch_shortcut_click(self):
-        self._camara = Camera('models/0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
+        self._camera = Camera('models/0ulr.pb', class_names=['0', 'u', 'l', 'r'], mode=camera.SHORTCUTS_MODE)
         self._loading.stop()
         self._status = 2
 
@@ -144,9 +144,9 @@ class MainWindow(QMainWindow):
         
     def on_btn_stop_launch_clicked(self):
         # 终止线程
-        stop_thread(self._camara_thread)
-        self._camara_thread = None
-        self._camara = None
+        stop_thread(self._camera_thread)
+        self._camera_thread = None
+        self._camera = None
         self._keyboard = None
         self._gesture_window = None
         self._model_window = None
@@ -166,8 +166,8 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         # 终止线程
-        if (self._camara_thread is not None):
-            stop_thread(self._camara_thread)
+        if (self._camera_thread is not None):
+            stop_thread(self._camera_thread)
         # 关闭窗体
         event.accept()
     
@@ -175,13 +175,19 @@ class MainWindow(QMainWindow):
         if (self._status == 0):
             return
         if (self._status == 1): # 点击启动鼠标移动按钮
-            self.init_camara_windows_and_thread()
+            self.init_camera_windows_and_thread()
             # 键盘
-            self._keyboard = MyKeyboard(self._camara)
+            self._keyboard = MyKeyboard(self._camera)
             self._keyboard.hide()
         if (self._status == 2):
-            self.init_camara_windows_and_thread()
+            self.init_camera_windows_and_thread()
         self._status = 0
+    
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        print(event.key())
+        if event.key() == Qt.Key_F1:
+            if self._camera is not None and self._camera_thread is not None:
+                self.on_btn_stop_launch_clicked()
             
             
 if __name__ == '__main__':
