@@ -7,8 +7,8 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
-from PySide.components.UserConfigWindow import UserConfigWindow
-from PySide.components.SystemConfigWindow import SystemConfigWindow
+from PySide.UserConfigWindow import UserConfigWindow
+from PySide.SystemConfigWindow import SystemConfigWindow
 from PySide.utils.PropertiesHandler import PropertyHandler
 from PySide.utils.MyMessageBox import MyMessageBox
 from PySide.utils.MyLoading import MyLoading
