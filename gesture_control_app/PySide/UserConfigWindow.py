@@ -62,12 +62,12 @@ class UserConfigWindow(QLabel):
         display_interval = 180  # 每个展示框的间隔
         self._display_area.show()
         self._display_area.setObjectName('display_area')
-        self._display_area.setGeometry(0, 0, self.width() - SCROLL_BAR_WIDTH, GESTURE_NUM * display_interval + 60)
+        self._display_area.resize(self.width() - SCROLL_BAR_WIDTH, GESTURE_NUM * display_interval + 60)
 
         # 滚动条
         self._scroll_area.show()
         self._scroll_area.setWidget(self._display_area)
-        self._scroll_area.setGeometry(0, 0, self.width(), self.height() - 100)
+        self._scroll_area.setGeometry(0, 20, self.width(), self.height() - 100)
         # 隐藏横向滚动条
         self._scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         for i in range(GESTURE_NUM):

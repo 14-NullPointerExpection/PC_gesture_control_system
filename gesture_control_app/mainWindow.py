@@ -10,6 +10,7 @@ import os
 from PySide.UserConfigWindow import UserConfigWindow
 from PySide.SystemConfigWindow import SystemConfigWindow
 from PySide.HelpWindow import HelpWindow
+from PySide.MyTabWidget import MyTabWidget
 from PySide.utils.PropertiesHandler import PropertyHandler
 from PySide.utils.MyMessageBox import MyMessageBox
 from PySide.utils.MyLoading import MyLoading
@@ -24,9 +25,6 @@ from PySide.MyKeyboard import MyKeyboard
 # 设置gesture_control_app文件夹为当前工作目录
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-print(os.path.dirname(os.path.abspath(__file__)))
-
-
 # 设置窗口的大小
 FLOATING_WINDOW_WIDTH = 300
 FLOATING_WINDOW_HEIGHT = 300
@@ -34,7 +32,6 @@ FLOATING_WINDOW_HEIGHT = 300
 # 获取主显示器分辨率
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -58,7 +55,7 @@ class MainWindow(QMainWindow):
         self._user_config_window = UserConfigWindow(properties, self)
         self._system_config_window = SystemConfigWindow(properties, self)
         self._help_window = HelpWindow(self)
-        self._tabs = QTabWidget(self)
+        self._tabs = MyTabWidget(self)
         self._btn_launch_mousemove = QPushButton(self)
         self._btn_launch_shortcut = QPushButton(self)
         self._btn_stop_launch = QPushButton(self)

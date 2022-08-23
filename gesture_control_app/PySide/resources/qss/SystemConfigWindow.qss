@@ -7,7 +7,7 @@
 .QPushButton:hover {
     background-color: #bcf6fd;
 }
-QWidget#SystemConfigWindow, QLabel#display_area {
+QWidget#SystemConfigWindow, QWidget#display_area {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
                                       stop: 0 #27a6fc, stop: 1 #cce8fa);
 }

@@ -19,7 +19,7 @@ class SystemConfigWindow(QWidget):
         self._labels = ['鼠标灵敏度', '页面滚动灵速率', '手势识别时间']
         self._label_keys = ['mouse_sensitivity', 'scroll_speed', 'gesture_recognition_speed']
         # 控件
-        self._display_area = QLabel(self)
+        self._display_area = QWidget(self)
         self._sliders = []
         self._label_of_sliders = []
         self._spin_boxes = []
