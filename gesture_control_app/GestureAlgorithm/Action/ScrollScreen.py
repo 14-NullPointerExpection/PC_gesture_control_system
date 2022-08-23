@@ -18,7 +18,7 @@ class ScrollScreen(BaseAction):
         self._last_y = 0
         self.properties = PropertyHandler('settings.properties').get_properties()
         self.scroll_speed = self.properties['scroll_speed'] / 50
-        self._STOP_DURATION = 2
+        self._STOP_DURATION = 1
 
     def action(self, points):
         if len(points) == 0:
@@ -31,12 +31,13 @@ class ScrollScreen(BaseAction):
             else:
                 # 移动的相对坐标
                 y_m = y_r - self._last_y
-                if abs(y_m) > 500:
+                if abs(y_m) > 300:
                     pag.scroll(int(y_m * 1.5 * self.scroll_speed))
                     self._stop_time = time.time()
                     self._can_action = False
-                self._last_y = y_r
+
         else:
             if time.time() - self._stop_time > self._STOP_DURATION:
                 self._can_action = True
                 self._stop_time = 0
+        self._last_y = y_r
