@@ -45,13 +45,16 @@ class VirtualKeyboard(BaseAction):
             cvzone.cornerRect(image, (button.pos[0], button.pos[1], button.size[0], button.size[1]),
                               20, rt=0)
             cv2.rectangle(image, button.pos, (x + w, y + h), (195, 150, 94), cv2.FILLED)
+            # 绘制DEL键
             if button.text == 'DEL':
                 cv2.putText(image, button.text, (x, y + 65),
                             cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 4)
+                # 绘制OK键
             elif button.text == 'OK':
                 cv2.putText(image, button.text, (x + 5, y + 65),
                             cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 4)
             else:
+                # 绘制其他按键
                 cv2.putText(image, button.text, (x + 20, y + 65),
                             cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 4)
         # 绘制下方输入框

@@ -23,7 +23,6 @@ class ScrollScreen(BaseAction):
     def action(self, points):
         if len(points) == 0:
             return
-
         # 当前的手指位置
         y_r = points[8][1] * 1600
         if self._can_action:

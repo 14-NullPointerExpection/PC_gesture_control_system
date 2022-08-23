@@ -51,19 +51,21 @@ class MouseMoving(BaseAction):
         if self._last_x == 0 and self._last_y == 0:
             self._last_x = x_r
             self._last_y = y_r
-
             return
         # 移动的相对坐标
         x_m = x_r - self._last_x
         y_m = y_r - self._last_y
-
+        # 判断是否在不应期
         if self._can_action:
+            # 是否可以尝试点击
             if abs(x_m) < 15 and abs(y_m) < 15:
                 self.try_click(points)
             else:
+                # 开启新的线程，移动鼠标
                 _thread.start_new_thread(self.move, (x_m, y_m,points))
                 # self.move(x_m, y_m, points)
         else:
+            # 判断是否可以解除不应期
             if time.time() - self._stop_time > self._STOP_DURATION:
                 self._can_action = True
                 self._stop_time = 0
@@ -73,12 +75,12 @@ class MouseMoving(BaseAction):
         self._last_y = y_r
 
     # 移动鼠标
-    def move(self, x_m, y_m, points):
+    def move(self, x_m, y_m):
         d = 0.1
         if abs(x_m) > 370 or abs(y_m) > 270:
+            # 快速移动
             x_m = int(x_m * 4)
             y_m = int(y_m * 3.5)
-
             x_m = self.mouse_sensitivity*x_m
             y_m = self.mouse_sensitivity*y_m
             self._stop_time = time.time()
