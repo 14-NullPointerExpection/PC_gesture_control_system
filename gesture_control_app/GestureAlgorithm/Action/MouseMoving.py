@@ -62,7 +62,7 @@ class MouseMoving(BaseAction):
                 self.try_click(points)
             else:
                 # 开启新的线程，移动鼠标
-                _thread.start_new_thread(self.move, (x_m, y_m,points))
+                _thread.start_new_thread(self.move, (x_m, y_m))
                 # self.move(x_m, y_m, points)
         else:
             # 判断是否可以解除不应期
