@@ -39,13 +39,15 @@ class MainWindow(QMainWindow):
         self._message_box = None
         self._loading = None
         self._status = 0
-        self.setWindowTitle('手势识别')
+        self.setWindowTitle('AI手势操控系统')
         self.setObjectName('main_window')
         properties = PropertyHandler('settings.properties').get_properties()
         if properties is None:
             self._message_box = MyMessageBox('配置文件打开失败', 'error')
             self.close()
-
+        # 设置图标
+        icon = QIcon('PySide/resources/images/icon.png')
+        self.setWindowIcon(icon)
         # 手势控件
         self._camera = None # 相机
         self._camera_thread = None # 相机线程
@@ -107,6 +109,7 @@ class MainWindow(QMainWindow):
         self._btn_stop_launch.setGeometry(QRect(340, 600, 100, 50))
         self._btn_stop_launch.setCursor(QCursor(Qt.PointingHandCursor))
         self._btn_stop_launch.clicked.connect(self.on_btn_stop_launch_clicked)
+
 
     def init_camera_windows_and_thread(self):
         if (self._camera is not None):

@@ -51,7 +51,7 @@ class GestureFloatingWindow(FloatingWindow):
         painter = QPainter(self)
         if not self._points:
             painter.setFont(QFont('微软雅黑', 20))
-            painter.drawText(30, 125, '识别不到手')
+            painter.drawText(50, 175, '未检测到手部')
             return
 
         # 骨架

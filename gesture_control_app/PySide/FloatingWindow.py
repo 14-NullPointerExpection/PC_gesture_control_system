@@ -130,34 +130,6 @@ class FloatingWindow(QWidget):
             # event.pos() 鼠标相对窗口的位置
             # event.globalPos() 鼠标在屏幕的绝对位置
             self._startPos = event.pos()
-        if event.button() == Qt.RightButton:
-            # 创建右键菜单
-            menu = QMenu(self)
-            menu.setStyleSheet(u"background-color: white;\n"
-                               "selection-color: rgb(0, 255, 127);\n"
-                               "selection-background-color: gray;\n"
-                               "font: 8pt;")
-            # 二级菜单
-            size_menu = menu.addMenu('Bkcolor')
-            light_gray = size_menu.addAction('Light-Gray')
-            gray = size_menu.addAction('Gray')
-            black = size_menu.addAction('Black')
-            # 普通菜单
-            quit_action = menu.addAction('Exit')
-            # 窗口定位到鼠标处
-            action = menu.exec_(self.mapToGlobal(event.pos()))
-
-            # 改变背景色
-            if action == light_gray:
-                self.setStyleSheet(u"background-color: rgb(100, 100, 100)")
-            if action == gray:
-                self.setStyleSheet(u"background-color: rgb(50, 50, 50)")
-            if action == black:
-                self.setStyleSheet(u"background-color: black")
-
-            if action == quit_action:
-                self.ui_alive = False
-                QCoreApplication.quit()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton:

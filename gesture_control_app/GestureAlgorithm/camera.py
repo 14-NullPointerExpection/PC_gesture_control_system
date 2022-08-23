@@ -70,6 +70,7 @@ def get_bone_image(image, points):
 class Camera:
 
     def __init__(self, model_path, class_names, mode):
+        # 读取配置文件
         self.properties = PropertyHandler('settings.properties').get_properties()
         # 加载模型
         self.model = dnn.readNetFromTensorflow(model_path)
@@ -101,7 +102,6 @@ class Camera:
         self.origin_image = None
         # 虚拟键盘
         self.virtual_keyboard = None
-
         self.keyboard_image = None
 
     # 通过摄像头捕获一帧图像，并进行翻转操作
@@ -146,11 +146,9 @@ class Camera:
 
     # 切换当前的鼠标操控模式
     def change_mouse_status(self, pre_class_id, class_id):
-
         # 如果当前的模式与前一个不同 则认为是改变的手的样式
         if pre_class_id != class_id:
             self.change_begin_time = time.time()
-
         else:
             # 如果当前的模式与前一个相同,且时间超过设定的时间，则认为是要改变操作的模式
             if time.time() - self.change_begin_time > self.keep_time:
@@ -204,7 +202,6 @@ class Camera:
             roi_image = get_roi(bone_image, critical_points)
             # 送入神经网络进行识别
             class_id = self.categorize_image(roi_image)
-
             # 根据识别的结果判断模式的切换与否
             self.change_mouse_status(self.predicted_value, class_id)
             self.predicted_value = class_id
@@ -215,10 +212,3 @@ def start(camera):
         pic = camera.get_frame_image()
         camera.gesture_recognition(pic)
         camera.execute_action(camera.points, )
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    camera = Camera('../125.pb', class_names=('1', '2', '5'), mode=MOUSE_MOVING)
-    start(camera)
-    sys.exit(app.exec_())

@@ -16,6 +16,8 @@ from GestureAlgorithm.camera import Camera
 
 WINDOW_WIDTH = 300
 WINDOW_HEIGHT = 300
+
+
 class ModelFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
@@ -33,28 +35,30 @@ class ModelFloatingWindow(FloatingWindow):
         # 设置字体大小
         painter.setFont(QFont('微软雅黑', 11))
         # 绘制文字
-        if self.camera.mouse_status == 0:
-            painter.drawText(10, 50, '当前模式 : 鼠标操控')
-            painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
-            if not self.camera.mouse_moving._can_action:
-                painter.drawText(10,100,'当前事件 : 鼠标点击')
-            else:
-                painter.drawText(10, 100, '当前事件 : 无')
-        elif self.camera.mouse_status == 1:
-            painter.drawText(10, 50, '当前模式 : 屏幕滚动')
-            # painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
-            if not self.camera.scroll_screen._can_action:
-                painter.drawText(10, 100, '当前事件 : 屏幕滚动')
-            else:
-                painter.drawText(10, 100, '当前事件 : 无')
-
-
-        # elif self.camera.mode == 1:
-        #     painter.drawText(10, 50, '当前模式 : 快捷指令')
-        #     # painter.drawText(10, 100, '当前事件 : ' + self._click_event)
+        if self.camera.mode == 0:
+            self.resize(300, 200)
+            if self.camera.mouse_status == 0:
+                painter.drawText(10, 50, '当前模式 : 鼠标操控')
+                painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
+                if not self.camera.mouse_moving._can_action:
+                    painter.drawText(10, 100, '当前事件 : 鼠标点击')
+                else:
+                    painter.drawText(10, 100, '当前事件 : 无')
+            elif self.camera.mouse_status == 1:
+                painter.drawText(10, 50, '当前模式 : 屏幕滚动')
+                # painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
+                if not self.camera.scroll_screen._can_action:
+                    painter.drawText(10, 100, '当前事件 : 屏幕滚动')
+                else:
+                    painter.drawText(10, 100, '当前事件 : 无')
+        elif self.camera.mode == 1:
+            self.resize(300, 100)
+            painter.drawText(30, 50, '当前模式 : 快捷指令')
+            # painter.drawText(10, 100, '当前事件 : ' + self._click_event)
 
     def timerEvent(self, event) -> None:
         self.update()
+
 
 if __name__ == '__main__':
     # 设置屏幕自适应
@@ -70,7 +74,7 @@ if __name__ == '__main__':
     # 设置最初出现的位置
     window_width = 300
     window_height = 300
-    gui.setGeometry(screen_width - window_width - 10, screen_height // 2+100, window_width, window_height)
+    gui.setGeometry(screen_width - window_width - 10, screen_height // 2 + 100, window_width, window_height)
     # 设置坐标中心点
     gui.show()
     sys.exit(app.exec_())
