@@ -47,7 +47,6 @@ class MyTabWidget(QTabWidget):
             w1 = w.findChild(QWidget, 'display_area')
             self.create_animation(w)
             self.create_animation(w1)
-            QTimer.singleShot(self.ANIMATION_DURATION, lambda : self.change_status('none', True))
             w.move(w.x(), -w.height())
             self._move_speed = w.height() / (self.ANIMATION_DURATION/10)
 
@@ -79,6 +78,7 @@ class MyTabWidget(QTabWidget):
         elif self._status == 'appear':
             w = self.currentWidget()
             if w.y() >= 0:
+                self.change_status('none', True)
                 w.move(w.x(), 0)
             else:
                 w.move(w.x(), w.y() + self._move_speed)
