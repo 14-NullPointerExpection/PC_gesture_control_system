@@ -18,7 +18,8 @@ class MyTabWidget(QTabWidget):
         self._move_speed = 1.0
         QTimer.singleShot(100, lambda : self.change_status('none', True))
         self._effect_animation = []
-        self.ANIMATION_DURATION = 300
+        self.ANIMATION_DISAPPEAR_DURATION = 200
+        self.ANIMATION_APPEAR_DURATION = 700
         # 切换事件
         self.tabBar().currentChanged.connect(self.on_current_changed)
         self.startTimer(10)
@@ -39,16 +40,20 @@ class MyTabWidget(QTabWidget):
             self.create_animation(w)
             self.create_animation(w1)
             self.change_status('change', True)
-            QTimer.singleShot(self.ANIMATION_DURATION, lambda : self.setCurrentIndex(self._current_index))
+            QTimer.singleShot(self.ANIMATION_DISAPPEAR_DURATION, lambda : self.setCurrentIndex(self._current_index))
         elif self._status == 'change':
             self.change_status('appear', False)
-            self._last_index = index
             w = self.currentWidget()
             w1 = w.findChild(QWidget, 'display_area')
+            self._move_speed = w.width() / (self.ANIMATION_APPEAR_DURATION/10)
+            if self._last_index < self._current_index:
+                self._move_speed = -self._move_speed
+                w.move(w.width(), w.y())
+            else:
+                w.move(-w.width(), w.y())
+            self._last_index = index
             self.create_animation(w)
             self.create_animation(w1)
-            w.move(w.x(), -w.height())
-            self._move_speed = w.height() / (self.ANIMATION_DURATION/10)
 
 
 
@@ -56,13 +61,15 @@ class MyTabWidget(QTabWidget):
         if (self._status == 'disappear'):
             start_opacity = 0.99
             end_opacity = 0.1
+            duration = self.ANIMATION_DISAPPEAR_DURATION
         else:
             start_opacity = 0.1
             end_opacity = 0.99
+            duration = self.ANIMATION_APPEAR_DURATION
         effect = QGraphicsOpacityEffect(widget)
         widget.setGraphicsEffect(effect)
         animation = QPropertyAnimation(effect, b'opacity')
-        animation.setDuration(self.ANIMATION_DURATION)
+        animation.setDuration(duration)
         animation.setStartValue(start_opacity)
         animation.setEndValue(end_opacity)
         animation.start(QAbstractAnimation.DeleteWhenStopped)
@@ -77,11 +84,12 @@ class MyTabWidget(QTabWidget):
             pass
         elif self._status == 'appear':
             w = self.currentWidget()
-            if w.y() >= 0:
-                self.change_status('none', True)
-                w.move(w.x(), 0)
+            x1 = w.x() + self._move_speed
+            if x1 * w.x() > 0:
+                w.move(x1, w.y())
             else:
-                w.move(w.x(), w.y() + self._move_speed)
+                self.change_status('none', True)
+                w.move(0, w.y())
 
     def change_status(self, status, ischange):
         self._status = status
