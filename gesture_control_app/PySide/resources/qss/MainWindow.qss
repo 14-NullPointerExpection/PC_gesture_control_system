@@ -1,29 +1,34 @@
 QPushButton#btn_launch {
-    background-color: #97eff9;
+    background-color: #158bb8;
     font-family: 'Microsoft YaHei';
     font-size: 20px;
+    font-weight: bold;
+    color: #FFFFFF;
     border-radius: 20px;
     border: #05a1ef 1px solid;
 }
+QWidget#main_window{
+    background-color: #cdf2fc;
+}
 QPushButton#btn_launch:hover {
-    background-color: #cef3f7;
+    background-color: #127fb4;
 }
 QTabBar::tab {
-    font-family: kaiti;
+    font-family: 'Microsoft YaHei';
     font-size: 25px;
+    font-weight: bold;
     height: 50px;
     width: 200px;
     border: 1px solid #fff;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #27a6fc, stop: 1 #cce8fa);
+    border-radius: 10px;
+    background-color: #158bb8;
+    color: #FFFFFF;
 }
 QTabBar::tab:hover {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #6dbff6, stop: 1 #e3f3fd);
+    background-color: #127fb4;
 }
 QTabBar::tab:selected {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #a8dafc, stop: 1 #e3f3fd);
+    background-color: #66a9c9;
 }
 QTabWidget::pane {
     background-color: transparent;

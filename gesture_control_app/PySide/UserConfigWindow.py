@@ -111,7 +111,7 @@ class UserConfigWindow(QLabel):
 
         # 保存按钮样式
         self._button_save.show()
-        self._button_save.setGeometry(QRect(self.width() / 2 - 50, self.height() - 80, 100, 40))
+        self._button_save.setGeometry(QRect(self.width() / 2 - 50, self.height() - 60, 100, 40))
         self._button_save.setCursor(Qt.PointingHandCursor)
         self._button_save.setText('保存')
         self._button_save.clicked.connect(self.save_configs)
@@ -121,7 +121,6 @@ class UserConfigWindow(QLabel):
         index = self._select.index(self.sender())
         # 如果选择的是打开网页，则显示文本框
         if self._select[index].currentIndex() == 1:
-            print('------------打开网页')
             self._input_area[index].setText(self._configs[self._init_action_url[index]])
             # 放开键盘
             self.releaseKeyboard()
@@ -132,7 +131,6 @@ class UserConfigWindow(QLabel):
             self._input_area[index].clicked.disconnect(self.input_area_clicked)
 
         else:
-            print('------------快捷按键')
             self.grabKeyboard()
             self._input_area[index].setReadOnly(True)
             # 文本框绑定点击事件

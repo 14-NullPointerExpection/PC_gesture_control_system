@@ -139,7 +139,6 @@ class PropertyHandler:
     
     def check_press_key_type(self, property_key, key):
         k = key.upper()
-        print(k)
         if k in KeyboardMap['key_to_ascii'].keys():
             return k
         else:

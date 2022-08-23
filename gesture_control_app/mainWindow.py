@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self._loading = None
         self._status = 0
         self.setWindowTitle('手势识别')
+        self.setObjectName('main_window')
         properties = PropertyHandler('settings.properties').get_properties()
         if properties is None:
             self._message_box = MyMessageBox('配置文件打开失败', 'error')
@@ -74,7 +75,7 @@ class MainWindow(QMainWindow):
     def initUI(self):
         # 窗体样式
         self.show()
-        self.resize(800, 700)
+        self.setFixedSize(800, 700)
         self.center()
         # tabs样式
         self._tabs.show()
@@ -94,7 +95,7 @@ class MainWindow(QMainWindow):
         self._btn_launch_mousemove.clicked.connect(self.on_btn_launch_mousemove_clicked)
 
         self._btn_launch_shortcut.show()
-        self._btn_launch_shortcut.setText('启动快捷键控制')
+        self._btn_launch_shortcut.setText('启动快捷手势控制')
         self._btn_launch_shortcut.setGeometry(QRect(420, 600, 200, 50))
         self._btn_launch_shortcut.setObjectName('btn_launch')
         self._btn_launch_shortcut.setCursor(QCursor(Qt.PointingHandCursor))
@@ -163,7 +164,7 @@ class MainWindow(QMainWindow):
     def paintEvent(self, event: QPaintEvent) -> None:
         # 绘制背景图片
         painter = QPainter(self)
-        painter.drawPixmap(self.rect(), QPixmap('PySide/resources/images/bgimage.png'))
+        # painter.drawPixmap(self.rect(), QPixmap('PySide/resources/images/bgimage.png'))
 
     def closeEvent(self, event: QCloseEvent) -> None:
         # 终止线程
@@ -185,7 +186,6 @@ class MainWindow(QMainWindow):
         self._status = 0
     
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        print(event.key())
         if event.key() == Qt.Key_F1:
             if self._camera is not None and self._camera_thread is not None:
                 self.on_btn_stop_launch_clicked()

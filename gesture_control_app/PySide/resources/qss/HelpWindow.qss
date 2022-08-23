@@ -1,11 +1,12 @@
 QWidget#display_area {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
-                                      stop: 0 #27a6fc, stop: 1 #cce8fa);
+/*    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,*/
+/*                                      stop: 0 #27a6fc, stop: 1 #cce8fa);*/
+    background-color: #7ac9f3;
 }
 QLabel#title {
     font-family: Microsoft YaHei;
     font-size: 30px;
-    color: rgb(255, 140, 0);
+    color: rgb(230, 103, 81);
     font-weight: bold;
     text-align: left;
 }

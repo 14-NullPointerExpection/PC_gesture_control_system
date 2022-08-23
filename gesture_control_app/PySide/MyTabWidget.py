@@ -18,7 +18,7 @@ class MyTabWidget(QTabWidget):
         self._move_speed = 1.0
         QTimer.singleShot(100, lambda : self.change_status('none', True))
         self._effect_animation = []
-        self.ANIMATION_DURATION = 700
+        self.ANIMATION_DURATION = 300
         # 切换事件
         self.tabBar().currentChanged.connect(self.on_current_changed)
         self.startTimer(10)

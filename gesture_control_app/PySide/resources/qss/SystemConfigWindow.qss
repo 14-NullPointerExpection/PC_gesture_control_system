@@ -1,15 +1,18 @@
-
 .QPushButton {
-    background-color: #97eff9;
+    background-color: #158bb8;
     font-family: 'Microsoft YaHei';
     font-size: 20px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-radius: 20px;
 }
 .QPushButton:hover {
-    background-color: #bcf6fd;
+    background-color: #127fb4;
 }
 QWidget#SystemConfigWindow, QWidget#display_area {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,
-                                      stop: 0 #27a6fc, stop: 1 #cce8fa);
+/*    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,*/
+/*                                      stop: 0 #27a6fc, stop: 1 #cce8fa);*/
+    background-color: #7ac9f3;
 }
 .QLabel, .QSpinBox {
     font-family: Microsoft YaHei;
