@@ -1,3 +1,8 @@
+"""
+动作事件的基类
+"""
+
+
 class BaseAction:
     def __init__(self):
         # 上一进行该操作的时间点

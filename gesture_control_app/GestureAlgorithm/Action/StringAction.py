@@ -5,8 +5,9 @@ import pyautogui as pag
 from GestureAlgorithm.Action.BaseAction import BaseAction
 import webbrowser
 
-
-# 字符串识别类，将字符串转化为配置文件对应操作
+"""
+字符串识别类，将字符串转化为配置文件对应操作
+"""
 class StringAction(BaseAction):
     def __init__(self, properties):
         super().__init__()

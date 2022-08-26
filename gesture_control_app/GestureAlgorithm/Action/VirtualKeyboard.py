@@ -15,9 +15,13 @@ from GestureAlgorithm.Action.BaseAction import BaseAction
 
 cgitb.enable(format='text')
 
+"""
+虚拟键盘类，用以处理指定手势后弹出虚拟键盘的操作
+"""
 
-# 虚拟键盘类，用以处理指定手势后弹出虚拟键盘的操作
+
 class VirtualKeyboard(BaseAction):
+    # 按钮的类
     class Button:
         def __init__(self, pos, text, size=[85, 85]):
             self.pos = pos
@@ -109,6 +113,7 @@ class VirtualKeyboard(BaseAction):
                                 self.final_text += button.text
                             sleep(0.15)
             else:
+                # 是否解除不应期
                 if time.time() - self._stop_time > self._STOP_DURATION:
                     self._can_action = True
                     self._stop_time = 0

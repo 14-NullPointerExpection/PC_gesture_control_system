@@ -66,7 +66,9 @@ def get_bone_image(image, points):
         cv.line(image, (points[17][0], points[17][1]), (points[0][0], points[0][1]), (128, 128, 128), 4)
     return image
 
-
+"""
+摄像头类 后端算法的核心类
+"""
 class Camera:
 
     def __init__(self, model_path, class_names, mode):

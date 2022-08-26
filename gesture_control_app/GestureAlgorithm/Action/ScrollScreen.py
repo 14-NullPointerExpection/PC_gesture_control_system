@@ -8,13 +8,13 @@ import pyautogui as pag
 
 from GestureAlgorithm.Action.BaseAction import BaseAction
 from PySide.utils.PropertiesHandler import PropertyHandler
-
-
+"""
+滚动屏幕类
+"""
 class ScrollScreen(BaseAction):
     def __init__(self):
         super().__init__()
         # 手指上次的位置
-        # self._last_stop_time = None
         self._last_y = 0
         self.properties = PropertyHandler('settings.properties').get_properties()
         self.scroll_speed = self.properties['scroll_speed'] / 50
@@ -25,6 +25,7 @@ class ScrollScreen(BaseAction):
             return
         # 当前的手指位置
         y_r = points[8][1] * 1600
+        # 判断是否在不应期
         if self._can_action:
             if self._last_y == 0:
                 self._last_y = y_r
@@ -37,7 +38,9 @@ class ScrollScreen(BaseAction):
                     self._can_action = False
 
         else:
+            # 判断是否可以解除不应期
             if time.time() - self._stop_time > self._STOP_DURATION:
                 self._can_action = True
                 self._stop_time = 0
+        # 更新上次的位置
         self._last_y = y_r

@@ -12,9 +12,9 @@ from PySide.utils.PropertiesHandler import PropertyHandler
 
 pag.FAILSAFE = False
 
-'''
+"""
 鼠标的移动类
-'''
+"""
 
 
 class MouseMoving(BaseAction):
@@ -30,7 +30,8 @@ class MouseMoving(BaseAction):
     # 检测是否有点击的操作
     def try_click(self, points):
         if self._can_action:
-            if abs(points[8][0] - points[12][0]) * 2560 < 80 and abs(points[8][1] - points[12][1]) * 1600 < 80:
+            if abs(points[8][0] - points[12][0]) * 2560 < 80 \
+                    and abs(points[8][1] - points[12][1]) * 1600 < 80:
                 pag.click()
                 self._last_click_time = time.time()
                 self._can_action = False
@@ -63,7 +64,7 @@ class MouseMoving(BaseAction):
             else:
                 # 开启新的线程，移动鼠标
                 _thread.start_new_thread(self.move, (x_m, y_m))
-                # self.move(x_m, y_m, points)
+
         else:
             # 判断是否可以解除不应期
             if time.time() - self._stop_time > self._STOP_DURATION:
