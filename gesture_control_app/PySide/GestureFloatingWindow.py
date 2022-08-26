@@ -22,6 +22,8 @@ WINDOW_HEIGHT = 400
 class CameraThread(QThread):
     def __init__(self, cam, ):
         super().__init__()
+        self.WINDOW_WIDTH = WINDOW_WIDTH
+        self.WINDOW_HEIGHT = WINDOW_HEIGHT
         self.cam = cam
 
     def run(self):
@@ -34,7 +36,7 @@ class CameraThread(QThread):
         self.wait()
 
 
-# 手势悬浮窗类，用以显示手势悬浮窗
+# 手势悬浮窗类，用以显示当前手势
 class GestureFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()

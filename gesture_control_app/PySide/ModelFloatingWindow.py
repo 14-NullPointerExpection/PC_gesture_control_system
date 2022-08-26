@@ -14,10 +14,11 @@ from PySide.FloatingWindow import FloatingWindow
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 
+# 设置窗口大小
 WINDOW_WIDTH = 300
 WINDOW_HEIGHT = 300
 
-
+# 模式悬浮窗类，用以显示当前模式
 class ModelFloatingWindow(FloatingWindow):
     def __init__(self, camera):
         super().__init__()
@@ -31,7 +32,6 @@ class ModelFloatingWindow(FloatingWindow):
         painter = QPainter(self)
         # 设置画笔颜色
         painter.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
-        # painter.setpen(QPen(Qt.red, 2, Qt.SolidLine))
         # 设置字体大小
         painter.setFont(QFont('微软雅黑', 11))
         # 绘制文字
@@ -46,7 +46,6 @@ class ModelFloatingWindow(FloatingWindow):
                     painter.drawText(10, 100, '当前事件 : 无')
             elif self.camera.mouse_status == 1:
                 painter.drawText(10, 50, '当前模式 : 屏幕滚动')
-                # painter.drawText(10, 150, '鼠标位置 : ' + str(pag.position().x) + ',' + str(pag.position().y))
                 if not self.camera.scroll_screen._can_action:
                     painter.drawText(10, 100, '当前事件 : 屏幕滚动')
                 else:
@@ -72,9 +71,7 @@ if __name__ == '__main__':
     _thread.start_new_thread(camera.start, (c,))
     gui = ModelFloatingWindow(c)
     # 设置最初出现的位置
-    window_width = 300
-    window_height = 300
-    gui.setGeometry(screen_width - window_width - 10, screen_height // 2 + 100, window_width, window_height)
+    gui.setGeometry(screen_width - WINDOW_WIDTH - 10, screen_height // 2 + 100, WINDOW_WIDTH, WINDOW_HEIGHT)
     # 设置坐标中心点
     gui.show()
     sys.exit(app.exec_())
