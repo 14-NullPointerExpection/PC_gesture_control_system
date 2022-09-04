@@ -36,7 +36,7 @@ class VirtualKeyboard(BaseAction):
                      ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", 'OK']]
         # 最终输出的文本
         self.final_text = ""
-        self.camera = None
+
         # 判断是否可以摧毁
         self.can_destroy = False
 
