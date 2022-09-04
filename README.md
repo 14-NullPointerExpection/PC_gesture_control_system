@@ -2,7 +2,7 @@
 
 <div STYLE="page-break-after: always;"></div>
 
-
+安装包已经发布在release中
 
 ## 功能简介
 
