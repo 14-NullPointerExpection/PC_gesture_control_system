@@ -69,7 +69,7 @@ class FaceAction(BaseAction):
                     # self._sleepFlag = True
                     self._zeroTime = 0
                     self.screenOff()
-                    # print("sleep")
+                    exit()
             return
 
         # 否则就重置第一次检测到没有脸的时间
