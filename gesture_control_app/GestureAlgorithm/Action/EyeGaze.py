@@ -9,10 +9,11 @@ class EyeGaze(BaseAction):
         self._STOP_DURATION = 2.0
         self._stop_time = 0
         self._can_action = True
-        self._is_gaze = True
         self._brightness = ScreenUtil().getBrightness()
         self._is_brightness_down = False
         self._screen_util = ScreenUtil()
+        self._gaze_num = 1
+        self._total_num = 1
 
     def is_eye_gaze(self, img):
         mp_face_mesh = mp.solutions.face_mesh  # 人脸网格
@@ -48,19 +49,25 @@ class EyeGaze(BaseAction):
         if self._can_action:
             self._can_action = False
             self._stop_time = time.time()
-            if self._is_gaze:
-                self._is_gaze = False
+            if self._total_num > 0 and self._gaze_num / self._total_num > 0.2:
+
                 if self._is_brightness_down:
                     self._screen_util.setBrightness(self._brightness)
                     self._is_brightness_down = False
             else:
                 if not self._is_brightness_down:
                     self._brightness = self._screen_util.getBrightness()
-                    self._screen_util.setBrightness(self._brightness // 2)
+                    temp_brightness = 20 if self._brightness // 2 > 20 else self._brightness // 2
+                    self._screen_util.setBrightness(temp_brightness)
                     self._is_brightness_down = True
+            self._gaze_num = 0
+            self._total_num = 0
 
         else:
-            self._is_gaze = self._is_gaze or self.is_eye_gaze(image)
+            is_gaze = self.is_eye_gaze(image)
+            self._total_num += 1
+            if is_gaze:
+                self._gaze_num += 1
             if time.time() - self._stop_time > self._STOP_DURATION:
                 self._can_action = True
 
