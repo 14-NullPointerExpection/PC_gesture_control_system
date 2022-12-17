@@ -75,7 +75,8 @@ class Camera:
         # 读取配置文件
         self.properties = PropertyHandler('settings.properties').get_properties()
         # 加载模型
-        self.model = dnn.readNetFromTensorflow(model_path)
+        if model_path:
+            self.model = dnn.readNetFromTensorflow(model_path)
         # 设置类别名
         self.class_names = class_names
         # 设置摄像头
