@@ -11,13 +11,14 @@ import numpy as np
 from PySide2.QtWidgets import QApplication
 from cv2 import dnn
 
-from GestureAlgorithm.Action import MouseMoving, ScrollScreen, VirtualKeyboard, StringAction
+from GestureAlgorithm.Action import MouseMoving, ScrollScreen, VirtualKeyboard, StringAction, FaceDetection, EyeGaze
 
 # 定义模式对应的常量
 from PySide.utils.PropertiesHandler import PropertyHandler
 
 MOUSE_CONTROL_MODE = 0
 SHORTCUTS_MODE = 1
+SMART_DETECT_MODE = 2
 # 定义鼠标状态对应的变量
 MOUSE_MOVING = 0
 SCROLL_SCREEN = 1
@@ -99,6 +100,8 @@ class Camera:
         self.mouse_moving = MouseMoving.MouseMoving()
         self.scroll_screen = ScrollScreen.ScrollScreen()
         self.string_action = StringAction.StringAction(properties=self.properties)
+        self.face_detection = FaceDetection.FaceAction()
+        self.eye_gaze = EyeGaze.EyeGaze()
         # 预测值
         self.predicted_value = None
         # 保存的图片
@@ -193,6 +196,12 @@ class Camera:
                 self.string_action.set_command(self.predicted_value)
                 self.string_action.action()
 
+        elif self.mode == SMART_DETECT_MODE:
+            if eval(self.properties['stranger_detection']) or eval(self.properties['lock_screen']):
+                self.face_detection.action(self.origin_image)
+            if eval(self.properties['gaze_detection']):
+                self.eye_gaze.action(self.origin_image)
+
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
     def gesture_recognition(self, image):
         critical_points = self.get_critical_hands_points(image)
@@ -213,5 +222,6 @@ class Camera:
 def start(camera):
     while True:
         pic = camera.get_frame_image()
-        camera.gesture_recognition(pic)
+        if camera.mode != SMART_DETECT_MODE:
+            camera.gesture_recognition(pic)
         camera.execute_action(camera.points, )

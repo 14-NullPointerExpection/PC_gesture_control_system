@@ -2,7 +2,7 @@ import time
 
 import mediapipe as mp
 import cv2
-from BaseAction import BaseAction
+from GestureAlgorithm.Action.BaseAction import BaseAction
 
 from ctypes import *
 
@@ -48,7 +48,7 @@ class FaceAction(BaseAction):
             faceNum = len(results.detections)
         return faceNum
 
-    def screenOff(self):
+    def screen_off(self):
         windll.user32.PostMessageW(HWND_BROADCAST, WM_SYSCOMMAND,
                                    SC_MONITORPOWER, MonitorPowerOff)
 
@@ -68,7 +68,7 @@ class FaceAction(BaseAction):
             elif(time.time() - self._zeroTime > self._sleepDURATION):
                     # self._sleepFlag = True
                     self._zeroTime = 0
-                    self.screenOff()
+                    self.screen_off()
                     exit()
             return
 
@@ -92,6 +92,9 @@ class FaceAction(BaseAction):
                 self._twoTime = 0
                 self._total = 0
                 self._twoFace = 0
+
+    def get_warning_flag(self):
+        return self._warningFlag
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
