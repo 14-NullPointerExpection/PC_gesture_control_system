@@ -40,3 +40,4 @@ QLabel#label_select, QComboBox {
     font-size: 20px;
     font-family: Microsoft YaHei;
 }
+

@@ -27,6 +27,10 @@ default_properties = {
     'right_action_url': '',
     'up_action_url': '',
     'zero_action_url': '',
+    # 隐私检测
+    'stranger_detection': False,  # 生人检测
+    'gaze_detection': False,  # 注视检测
+    'lock_screen': False,  # 人走锁屏
 }
 property_labels = {
     'mouse_sensitivity': '# 鼠标灵敏度',
@@ -43,7 +47,10 @@ property_labels = {
     'left_action_url': '# left网址url',
     'right_action_url': '# right网址url',
     'up_action_url': '# up网址url',
-    'zero_action_url': '# zero网址url'
+    'zero_action_url': '# zero网址url',
+    'stranger_detection': '# 生人检测',
+    'gaze_detection': '# 注视检测',
+    'lock_screen': '# 人走锁屏'
 }
 
 
