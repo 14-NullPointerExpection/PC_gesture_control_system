@@ -1,7 +1,9 @@
 
 from GestureAlgorithm.Action.BaseAction import BaseAction
 from PySide.utils.ScreenUtil import ScreenUtil
-
+import cv2
+import mediapipe as mp
+import time
 class EyeGaze(BaseAction):
 
     def __init__(self):
@@ -64,7 +66,7 @@ class EyeGaze(BaseAction):
             self._total_num = 0
 
         else:
-            is_gaze = self.is_eye_gaze(image)
+            is_gaze = self.is_eye_gaze(img)
             self._total_num += 1
             if is_gaze:
                 self._gaze_num += 1
@@ -77,9 +79,7 @@ def draw_point(landmark, image, color=(0, 255, 0), radius=2):
     cv2.circle(image, (int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0])), radius, color, -1)
 
 if __name__ == '__main__':
-    import cv2
-    import mediapipe as mp
-    import time
+
 
     mp_drawing = mp.solutions.drawing_utils  # 绘图工具
     mp_drawing_styles = mp.solutions.drawing_styles  # 绘图样式

@@ -59,6 +59,7 @@ class FaceAction(BaseAction):
     def action(self, img):
         faceNum = self.face_process(img)
         self._total += 1
+        print("faceNum",faceNum)
         # 检测到没有脸
         if(faceNum == 0):
             # 如果第一次检测到没有脸，那就记录时间
