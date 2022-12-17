@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         self._tabs = MyTabWidget(self)
         self._btn_launch_mousemove = QPushButton(self)
         self._btn_launch_shortcut = QPushButton(self)
+        self._btn_launch_smart_detect = QPushButton(self)
         self._btn_stop_launch = QPushButton(self)
         
         self.initUI()
@@ -91,17 +92,24 @@ class MainWindow(QMainWindow):
         # 启动按钮样式
         self._btn_launch_mousemove.show()
         self._btn_launch_mousemove.setText('启动鼠标控制')
-        self._btn_launch_mousemove.setGeometry(QRect(160, 600, 200, 50))
+        self._btn_launch_mousemove.setGeometry(QRect(50, 600, 200, 50))
         self._btn_launch_mousemove.setObjectName('btn_launch')
         self._btn_launch_mousemove.setCursor(QCursor(Qt.PointingHandCursor))
         self._btn_launch_mousemove.clicked.connect(self.on_btn_launch_mousemove_clicked)
 
         self._btn_launch_shortcut.show()
         self._btn_launch_shortcut.setText('启动快捷手势控制')
-        self._btn_launch_shortcut.setGeometry(QRect(420, 600, 200, 50))
+        self._btn_launch_shortcut.setGeometry(QRect(310, 600, 200, 50))
         self._btn_launch_shortcut.setObjectName('btn_launch')
         self._btn_launch_shortcut.setCursor(QCursor(Qt.PointingHandCursor))
         self._btn_launch_shortcut.clicked.connect(self.on_btn_launch_shortcut_clicked)
+
+        self._btn_launch_smart_detect.show()
+        self._btn_launch_smart_detect.setText('启动智能感应')
+        self._btn_launch_smart_detect.setGeometry(QRect(570, 600, 200, 50))
+        self._btn_launch_smart_detect.setObjectName('btn_launch')
+        self._btn_launch_smart_detect.setCursor(QCursor(Qt.PointingHandCursor))
+        self._btn_launch_smart_detect.clicked.connect(self.on_btn_launch_smart_detect_clicked)
 
         self._btn_stop_launch.hide()
         self._btn_stop_launch.setText('停止')
@@ -128,6 +136,9 @@ class MainWindow(QMainWindow):
             self._btn_launch_mousemove.hide()
             self._btn_launch_shortcut.hide()
             self._btn_stop_launch.show()
+
+    def start_detect(self):
+        pass
     
     def handle_btn_launch_mousemove_click(self):
         self._camera = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
@@ -139,6 +150,11 @@ class MainWindow(QMainWindow):
         self._loading.stop()
         self._status = 2
 
+    def handle_btn_launch_smart_detect_click(self):
+        self._camera = Camera(None, None, mode=camera.SMART_DETECT_MODE)
+        self._loading.stop()
+        self._status = 3
+
     def on_btn_launch_mousemove_clicked(self):
         self._loading = MyLoading('加载摄像模块中', self)
         threading.Thread(target=self.handle_btn_launch_mousemove_click).start()
@@ -146,6 +162,10 @@ class MainWindow(QMainWindow):
     def on_btn_launch_shortcut_clicked(self):
         self._loading = MyLoading('加载摄像模块中', self)
         threading.Thread(target=self.handle_btn_launch_shortcut_click).start()
+
+    def on_btn_launch_smart_detect_clicked(self):
+        self._loading = MyLoading('加载摄像模块中', self)
+        threading.Thread(target=self.handle_btn_launch_smart_detect_click).start()
         
     def on_btn_stop_launch_clicked(self):
         # 终止线程
@@ -186,6 +206,8 @@ class MainWindow(QMainWindow):
             self._keyboard.hide()
         if (self._status == 2):
             self.init_camera_windows_and_thread()
+        if (self._status == 3):
+            self.start_detect()
         self._status = 0
     
     def keyPressEvent(self, event: QKeyEvent) -> None:

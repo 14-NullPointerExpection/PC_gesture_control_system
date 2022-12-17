@@ -47,7 +47,7 @@ class SystemConfigWindow(QWidget):
         # 展示区域
         self._display_area.show()
         self._display_area.setObjectName('display_area')
-        self._display_area.resize(self.width() - SCROLL_BAR_WIDTH, 1000)
+        self._display_area.resize(self.width() - SCROLL_BAR_WIDTH, 700)
         # 滚动区域
         self._scroll_area.show()
         self._scroll_area.setWidget(self._display_area)
@@ -82,18 +82,18 @@ class SystemConfigWindow(QWidget):
             self._label_of_sliders.append(QLabel(self._display_area))
             self._spin_boxes.append(QSpinBox(self._display_area))
             # 滑块
-            self._sliders[i].setGeometry(QRect(start_x + 170, start_y + 10 + i * 80, 250, 30))
+            self._sliders[i].setGeometry(QRect(start_x + 170, start_y + 10 + i * 70, 250, 30))
             self._sliders[i].setMinimum(1)
             self._sliders[i].setMaximum(100)
             self._sliders[i].setValue(self._configs[self._label_keys[i]])
             self._sliders[i].valueChanged.connect(self._spin_boxes[i].setValue)
             self._sliders[i].show()
             # 滑块标签
-            self._label_of_sliders[i].setGeometry(QRect(start_x + 10, start_y + 10 + i * 80, 150, 30))
+            self._label_of_sliders[i].setGeometry(QRect(start_x + 10, start_y + 10 + i * 70, 150, 30))
             self._label_of_sliders[i].setText(self._labels[i])
             self._label_of_sliders[i].show()
             # 滑块值
-            self._spin_boxes[i].setGeometry(QRect(start_x + 430, start_y + 10 + i * 80, 50, 30))
+            self._spin_boxes[i].setGeometry(QRect(start_x + 430, start_y + 10 + i * 70, 50, 30))
             self._spin_boxes[i].setMinimum(1)
             self._spin_boxes[i].setMaximum(100)
             self._spin_boxes[i].setValue(self._configs[self._label_keys[i]])
