@@ -17,6 +17,8 @@ from PySide.utils.MyLoading import MyLoading
 from PySide.utils.ThreadUtils import stop_thread
 from PySide.GestureFloatingWindow import GestureFloatingWindow
 from PySide.ModelFloatingWindow import ModelFloatingWindow
+from PySide.WarningFloatingWindow import WarningWindow
+
 from GestureAlgorithm import camera
 from GestureAlgorithm.camera import Camera
 import threading
@@ -137,22 +139,19 @@ class MainWindow(QMainWindow):
             self._btn_launch_shortcut.hide()
             self._btn_stop_launch.show()
 
-    # def start_detect(self):
-    #     if (self._camera is not None):
-    #         # 相机线程
-    #         self._camera_thread = threading.Thread(target=camera.start, args=(self._camera,))
-    #         self._camera_thread.start()
-    #     print(self._camera.face_detection.get_warning_flag())
+
     def start_detect(self):
         if (self._camera is not None):
             # 相机线程
             self._camera_thread = threading.Thread(target=camera.start, args=(self._camera,))
             self._camera_thread.start()
-            print("-----------------------------------------------------------",self._camera.face_detection.get_warning_flag())
-            # 按钮显示状态
-            self._btn_launch_mousemove.hide()
-            self._btn_launch_shortcut.hide()
-            self._btn_stop_launch.show()
+            # 警告窗体
+            self._warning_window = WarningWindow(self._camera)
+            print('start_detect')
+            # # 按钮显示状态
+            # self._btn_launch_mousemove.hide()
+            # self._btn_launch_shortcut.hide()
+            # self._btn_stop_launch.show()
     
     def handle_btn_launch_mousemove_click(self):
         self._camera = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
@@ -223,7 +222,7 @@ class MainWindow(QMainWindow):
         if (self._status == 3):
             self.start_detect()
         self._status = 0
-    
+
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key_F1:
             if self._camera is not None and self._camera_thread is not None:

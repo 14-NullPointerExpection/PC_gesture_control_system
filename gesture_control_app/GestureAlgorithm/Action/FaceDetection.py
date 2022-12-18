@@ -59,32 +59,32 @@ class FaceAction(BaseAction):
     def action(self, img):
         faceNum = self.face_process(img)
         self._total += 1
-        print("faceNum",faceNum)
+        print("faceNum", faceNum)
         # 检测到没有脸
-        if(faceNum == 0):
+        if (faceNum == 0):
             # 如果第一次检测到没有脸，那就记录时间
-            if(self._zeroTime == 0):
+            if (self._zeroTime == 0):
                 self._zeroTime = time.time()
             # 如果检测到没有脸的时间超过了阙值，那就息屏
-            elif(time.time() - self._zeroTime > self._sleepDURATION):
-                    # self._sleepFlag = True
-                    self._zeroTime = 0
-                    self.screen_off()
-                    exit()
+            elif (time.time() - self._zeroTime > self._sleepDURATION):
+                # self._sleepFlag = True
+                self._zeroTime = 0
+                self.screen_off()
+                exit()
             return
 
         # 否则就重置第一次检测到没有脸的时间
         self._zeroTime = 0
 
         # 检测到两个人脸
-        if(faceNum >= 2):
+        if (faceNum >= 2):
             self._twoFace += 1
             # 如果第一次检测到两个人脸，那就记录时间
-            if(self._twoTime == 0):
+            if (self._twoTime == 0):
                 self._twoTime = time.time()
             # 如果在时间间隔内检测到两张脸的概率超过阙值，那就报警
-            if(time.time() - self._twoTime > self._warningDURATION):
-                if(self._twoFace / self._total >= self._ACCURACY):
+            if (time.time() - self._twoTime > self._warningDURATION):
+                if (self._twoFace / self._total >= self._ACCURACY):
                     self._warningFlag = True
                     print("警告")
                 else:
@@ -97,6 +97,10 @@ class FaceAction(BaseAction):
     def get_warning_flag(self):
         return self._warningFlag
 
+    def set_warning_flag(self, flag):
+        self._warningFlag = flag
+
+
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
     face = FaceAction()
@@ -105,4 +109,3 @@ if __name__ == '__main__':
         face.action(img)
         # cv2.imshow("Image", img)
         cv2.waitKey(10)
-
