@@ -127,6 +127,9 @@ class PropertyHandler:
         properties['right_action_key'] = self.check_press_key_type('right_action_key', properties['right_action_key'])
         properties['up_action_key'] = self.check_press_key_type('up_action_key', properties['up_action_key'])
         properties['zero_action_key'] = self.check_press_key_type('zero_action_key', properties['zero_action_key'])
+        properties['stranger_detection'] = self.check_boolean('stranger_detection', properties['stranger_detection'])
+        properties['gaze_detection'] = self.check_boolean('gaze_detection', properties['gaze_detection'])
+        properties['lock_screen'] = self.check_boolean('lock_screen', properties['lock_screen'])
 
 
     def check_property_intvalue(self, key, value, min_value, max_value):
@@ -150,6 +153,13 @@ class PropertyHandler:
             return k
         else:
             return default_properties[property_key]
+
+    def check_boolean(self, key, value):
+        if value == 'True':
+            return True
+        if value == 'False':
+            return False
+        return default_properties[key]
 
     def save_properties(self, properties):
         return self.generate_properties(properties)

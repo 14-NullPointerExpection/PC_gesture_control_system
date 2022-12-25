@@ -36,7 +36,7 @@ class WarningWindow(QWidget):
         # 设置最高优先级
         self.msg.setWindowFlags(Qt.WindowStaysOnTopHint)
         with open(
-                'D:\\WorkSpace\\PycharmProjects\\PC_gesture_control_system\\gesture_control_app\\PySide\\resources\\qss\\WarningMessage.qss',
+                'PySide/resources/qss/WarningMessage.qss',
                 'r', encoding='UTF-8') as f:
             self.msg.setStyleSheet(f.read())
         self.timeId = self.startTimer(100)

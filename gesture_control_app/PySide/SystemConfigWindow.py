@@ -76,7 +76,7 @@ class SystemConfigWindow(QWidget):
             self._check_boxes[i].setStyleSheet('font-size: 20px;font-family: "Microsoft YaHei";')
             self._check_boxes[i].show()
             # print(self._configs[self._check_box_keys[i]])
-            self._check_boxes[i].setChecked(eval(self._configs[self._check_box_keys[i]]))
+            self._check_boxes[i].setChecked(self._configs[self._check_box_keys[i]])
         for i in range(3):
             self._sliders.append(QSlider(Qt.Horizontal, self._display_area))
             self._label_of_sliders.append(QLabel(self._display_area))

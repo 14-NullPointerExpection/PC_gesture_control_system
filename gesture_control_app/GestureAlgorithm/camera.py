@@ -197,9 +197,9 @@ class Camera:
                 self.string_action.action()
 
         elif self.mode == SMART_DETECT_MODE:
-            if eval(self.properties['stranger_detection']) or eval(self.properties['lock_screen']):
+            if self.properties['stranger_detection'] or self.properties['lock_screen']:
                 self.face_detection.action(self.origin_image)
-            if eval(self.properties['gaze_detection']):
+            if self.properties['gaze_detection']:
                 self.eye_gaze.action(self.origin_image)
 
     # 手势识别全操作，包括获取关键点，获取感兴趣的区域
