@@ -38,6 +38,7 @@ SCREEN_HEIGHT = 800
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self._warning_window = None
         self._message_box = None
         self._loading = None
         self._status = 0
@@ -137,7 +138,10 @@ class MainWindow(QMainWindow):
             # 按钮显示状态
             self._btn_launch_mousemove.hide()
             self._btn_launch_shortcut.hide()
+            self._btn_launch_smart_detect.hide()
             self._btn_stop_launch.show()
+            print('start_detect')
+
 
 
     def start_detect(self):
@@ -147,11 +151,13 @@ class MainWindow(QMainWindow):
             self._camera_thread.start()
             # 警告窗体
             self._warning_window = WarningWindow(self._camera)
-            print('start_detect')
             # # 按钮显示状态
-            # self._btn_launch_mousemove.hide()
-            # self._btn_launch_shortcut.hide()
-            # self._btn_stop_launch.show()
+            self._btn_launch_mousemove.hide()
+            self._btn_launch_shortcut.hide()
+            self._btn_launch_smart_detect.hide()
+            self._btn_stop_launch.show()
+            print('start_detect')
+
     
     def handle_btn_launch_mousemove_click(self):
         self._camera = Camera('models/125.pb', class_names=['1', '2', '5'], mode=camera.MOUSE_CONTROL_MODE)
@@ -185,12 +191,14 @@ class MainWindow(QMainWindow):
         stop_thread(self._camera_thread)
         self._camera_thread = None
         self._camera = None
+        self._warning_window = None
         self._keyboard = None
         self._gesture_window = None
         self._model_window = None
         # 按钮显示状态
         self._btn_launch_mousemove.show()
         self._btn_launch_shortcut.show()
+        self._btn_launch_smart_detect.show()
         self._btn_stop_launch.hide()
 
 
