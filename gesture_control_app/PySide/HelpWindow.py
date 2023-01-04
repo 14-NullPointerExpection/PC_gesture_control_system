@@ -18,9 +18,11 @@ class HelpWindow(QWidget):
         self._title1 = QLabel(self._display_area)
         self._title2 = QLabel(self._display_area)
         self._title3 = QLabel(self._display_area)
+        self._title4 = QLabel(self._display_area)
         self._content1 = QLabel(self._display_area)
         self._content2 = QLabel(self._display_area)
         self._content3 = QLabel(self._display_area)
+        self._content4 = QLabel(self._display_area)
         self.init_ui()
         
         # 引入样式
@@ -36,7 +38,7 @@ class HelpWindow(QWidget):
         # 展示区域
         self._display_area.show()
         self._display_area.setObjectName('display_area')
-        self._display_area.setGeometry(0, 0, self.width() - SCROLL_BAR_WIDTH, self.height()+200)
+        self._display_area.setGeometry(0, 0, self.width() - SCROLL_BAR_WIDTH, self.height()+300)
 
         # 滚动条
         self._scroll_area.show()
@@ -59,7 +61,11 @@ class HelpWindow(QWidget):
 
         self._title3.setObjectName('title')
         self._title3.setGeometry(start_x, start_y + 480, 200, 35)
-        self._title3.setText('其他说明')
+        self._title3.setText('智能感应模式')
+
+        self._title4.setObjectName('title')
+        self._title4.setGeometry(start_x, start_y + 610, 200, 35)
+        self._title4.setText('其他说明')
 
         # 内容
         self._content1.setObjectName('content')
@@ -89,9 +95,18 @@ class HelpWindow(QWidget):
         self._content2.setText(content2)
 
         self._content3.setObjectName('content')
-        self._content3.setGeometry(start_x, start_y + 390, 700, 300)
+        self._content3.setGeometry(start_x, start_y + 410, 700, 300)
         content3 = '''
+        ● 点击"启动智能控制"即可开启智能感应模式。
+        ● 在系统配置中的隐私检测配置可以选择启用智能感应中的哪几种模式。
+        ● 点击"停止"按钮或者按下 F1 键, 可以退出智能感应模式。
+        '''
+        self._content3.setText(content3)
+
+        self._content4.setObjectName('content')
+        self._content4.setGeometry(start_x, start_y + 520, 700, 300)
+        content4 = '''
         ● 如果手势识别速度过慢或过快, 可以在系统设置中调节手势识别时间
         ● 所有设置均须保存后才能生效
         '''
-        self._content3.setText(content3)
+        self._content4.setText(content4)
